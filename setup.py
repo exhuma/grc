@@ -17,7 +17,9 @@ setup(
     author_email=AUTHOR_EMAIL,
     license="GPL",
     install_requires = [
+        'pyyaml'
       ],
+    scripts = ['grc/scripts/grc'],
     packages=find_packages(exclude=["tests.*", "tests"]),
     zip_safe=False,
 )

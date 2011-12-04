@@ -1,0 +1,64 @@
+# An example YAML config file beautifying the output of ``python setup.py
+# install``
+#
+# Rules are standard python regexes. grc will replace the lines according to
+# matching rules. So you can even re-write entries as seen in this example.
+#
+# The rules are parsed sequentially. The first rule that matches an input line
+# counts. All subsequent rules are skipped, unless "continue" is set to 'yes'.
+#
+# So, if you would like to apply multiple rules on one line, you can specify
+# the key 'continue' with 'yes'. The first rule without this flag will stop
+# processing again. See the "dependencies" context for an example.
+#
+# If you want, you can create contex-sensitive rules. This example makes use
+# of the "dependencies" context. You can use the "push" action to push a
+# context to the context. From that point on, only the rules in this context
+# are processed. You can go back to the previous contact by setting "pop" to
+# "yes"
+
+
+#
+# The main context is always named 'root'. Likely this is all you need
+#
+root:
+    - match: '^(running)(.*)'
+      replace: '*** ${GREEN}\1${NORMAL}\2'
+
+    - match: '^(writing)(.*)'
+      replace: '>>> ${YELLOW}\1${NORMAL}\2'
+
+    - match: '^(reading)(.*)'
+      replace: '<<< ${BLUE}\1${NORMAL}\2'
+
+    # replace the line, and push a new context to the stack
+    - match: '^(Processing dependencies) (for) (.*)'
+      replace: '\n${GREEN}\1${NORMAL} \2 ${GREEN}\3${NORMAL}'
+      push: dependencies
+
+#
+# The rules for the "dependencies" context. Just for fun, we'll prefix all
+# lines in this context with a pipe symbol. This also explains the last rule.
+# Anything not matched previously
+#
+dependencies:
+    # Prefix all lines with a pipe. We'll apply this, but don't want to stop
+    # processing here. So we set "continue" to yes.
+    - match: '^(.*)$'
+      replace: '| \1'
+      continue: yes
+
+    # Note that all the following rules must take the above "matchall" rule
+    # into account! In this case, all line will have a pipe prefixed. We'll
+    # need to add this to the match rules.
+
+    - match: '^\| (Best match:|Searching for|Processing)'
+      replace: '| ${BLUE}\1${NORMAL}'
+
+    - match: '^\| (Finished processing dependencies)'
+      replace: '| ${GREEN}\1${NORMAL}'
+
+      # This line marks the end of the dependencied. So we'll pop the state
+      # from the stack.
+      pop: yes
+
