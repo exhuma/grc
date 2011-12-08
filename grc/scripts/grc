@@ -2,43 +2,88 @@
 
 import sys
 import re
-
-from grc import pexpect
-
-from grc.term import TerminalController
+from os.path import basename, expanduser, exists, join
+from optparse import OptionParser
 
 from yaml import load
 
-CONF = load(open('pysetup.yml'))
-
-from pprint import pprint; pprint(CONF)
+from grc import pexpect
+from grc.term import TerminalController
 
 STATE = ['root']
 
-tc = TerminalController()
-child = pexpect.spawn(" ".join(sys.argv[1:]))
-for line in child:
-    line = line.strip()
-    for rule in CONF[STATE[-1]]:
-        # rule defaults
-        regex = re.compile(rule.get('match', r'^.*$'))
-        replace = rule.get('replace', r'\0')
-        push = rule.get('push', None)
-        pop = rule.get('pop', False)
-        continue_ = rule.get('continue', False)
+def parse_options():
+    '''
+    Returns a tuple of command-line options and remaining arguments (see
+    optparse)
+    '''
+    parser = OptionParser()
+    parser.add_option("-f", "--file", dest="filename",
+        help="Use FILE as config-file. Overrides auto-detection",
+        metavar="FILE")
+    return parser.parse_args()
 
-        # transform the line if necessary
-        match = regex.search(line)
-        if match:
-            line = regex.sub(replace, line)
-            if push:
-                STATE.append(push)
-            if pop and len(STATE) > 1:
-                STATE.pop()
+def find_conf(appname):
+    """
+    Searches for a config file name.
 
-            if not continue_:
-                break
+    Search order:
+        ~/.grc/conf.d/<appname>.yml
+        /etc/grc/conf.d/<appname>.yml
+        /usr/share/grc/conf.d/<appname>.yml
 
-    print tc.render(line)
+    TIP:
+        If you have one config file that could be used for multiple
+        applications: symlink it!
+    """
+    confname = join('conf.d', "%s.yml" % appname)
+    tmp = join(expanduser('~'), '.grc', confname)
+    if exists(tmp):
+        return tmp
 
+    tmp = join('/etc', 'grc', confname)
+    if exists(tmp):
+        return tmp
 
+    tmp = join('/usr', 'share', 'grc', confname)
+    if exists(tmp):
+        return tmp
+
+    sys.stderr.write('No config found for %s\n' % appname)
+    sys.exit(0)
+
+def main():
+    options, args = parse_options()
+    tc = TerminalController()
+    cols = tc.COLS or 80
+
+    conf_file = find_conf(basename(args[0]))
+    conf = load(open(conf_file))
+
+    child = pexpect.spawn(" ".join(args), cols=cols)
+    for line in child:
+        line = line.strip()
+        for rule in conf[STATE[-1]]:
+            # rule defaults
+            regex = re.compile(rule.get('match', r'^.*$'))
+            replace = rule.get('replace', r'\0')
+            push = rule.get('push', None)
+            pop = rule.get('pop', False)
+            continue_ = rule.get('continue', False)
+
+            # transform the line if necessary
+            match = regex.search(line)
+            if match:
+                line = regex.sub(replace, line)
+                if push:
+                    STATE.append(push)
+                if pop and len(STATE) > 1:
+                    STATE.pop()
+
+                if not continue_:
+                    break
+
+        print tc.render(line)
+
+if __name__ == '__main__':
+    main()

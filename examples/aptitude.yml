@@ -1,0 +1,9 @@
+root:
+    - match: '^(p)(.*)'
+      replace: '${BG_GREEN}${BLACK}\1${NORMAL}\2'
+
+    - match: '^(i)(.*)'
+      replace: '${BG_YELLOW}${BLACK}\1${NORMAL}\2'
+
+    - match: '^(v)(.*)'
+      replace: '${BG_MAGENTA}${BLACK}\1${NORMAL}\2'

@@ -268,7 +268,7 @@ class spawn (object):
     """This is the main class interface for Pexpect. Use this class to start
     and control child applications. """
 
-    def __init__(self, command, args=[], timeout=30, maxread=2000, searchwindowsize=None, logfile=None, cwd=None, env=None):
+    def __init__(self, command, args=[], timeout=30, maxread=2000, searchwindowsize=None, logfile=None, cwd=None, env=None, cols=80):
 
         """This is the constructor. The command parameter may be a string that
         includes a command and any arguments to the command. For example::
@@ -417,6 +417,7 @@ class spawn (object):
         self.cwd = cwd
         self.env = env
         self.__irix_hack = (sys.platform.lower().find('irix')>=0) # This flags if we are running on irix
+        self.__cols = cols
         # Solaris uses internal __fork_pty(). All others use pty.fork().
         if (sys.platform.lower().find('solaris')>=0) or (sys.platform.lower().find('sunos5')>=0):
             self.use_native_pty_fork = False
@@ -537,7 +538,7 @@ class spawn (object):
         if self.pid == 0: # Child
             try:
                 self.child_fd = sys.stdout.fileno() # used by setwinsize()
-                self.setwinsize(24, 80)
+                self.setwinsize(24, self.__cols)
             except:
                 # Some platforms do not like setwinsize (Cygwin).
                 # This will cause problem when running applications that
