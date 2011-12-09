@@ -1,0 +1,47 @@
+root:
+    - match: '^(running)(.*)'
+      replace: '*** ${GREEN}\1${NORMAL}\2'
+
+    - match: '^(writing)(.*)'
+      replace: '>>> ${YELLOW}\1${NORMAL}\2'
+
+    - match: '^(reading)(.*)'
+      replace: '<<< ${BLUE}\1${NORMAL}\2'
+
+    - match: '^(Processing dependencies for)(.*)'
+      replace: '${GREEN}\1${NORMAL}\2'
+      push: dependencies
+
+    - match: '^(Installing.*)'
+      replace: '>>> ${GREEN}\1${NORMAL}'
+
+dependencies:
+    - match: '^(Finished processing dependencies for)(.*)'
+      replace: '${GREEN}\1${NORMAL}\2'
+      pop: yes
+
+    - match: '^(Searching for )(.*)$'
+      replace: '\1${BLUE}\2${NORMAL}'
+      push: dependency
+
+dependency:
+    - match: '(.*)'
+      replace: ' | \1'
+      continue: yes
+
+    - match: '^ \| (Installing.*)'
+      replace: ' | >>> ${GREEN}\1${NORMAL}'
+
+    - match: '^ \| (Running.*)'
+      replace: ' | ${GREEN}\1${NORMAL}'
+
+    - match: '^ \| (Best match.*)'
+      replace: ' | ${GREEN}\1${NORMAL}'
+
+    - match: '^ \| (WARNING|warning)'
+      replace: ' | ${YELLOW}\1${NORMAL}'
+
+    - match: '^ \| Installed(.*)'
+      replace: ' | Installed\1\n'
+      pop: yes
+
