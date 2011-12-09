@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 
+"""
+Generic Colorizer
+
+TODO
+    - if no replacement is specified, emit the original line
+    - Allow for pop "before" and "after"
+"""
+
 import sys
 import re
 from os.path import basename, expanduser, exists, join
@@ -18,9 +26,9 @@ def parse_options():
     optparse)
     '''
     parser = OptionParser()
-    parser.add_option("-f", "--file", dest="filename",
-        help="Use FILE as config-file. Overrides auto-detection",
-        metavar="FILE")
+    parser.add_option("-c", "--config", dest="config_name",
+            help="Use NAME as config-name. Overrides auto-detection. The file should exist in the folders searched for configs. See :meth:find_conf(name)",
+        metavar="NAME")
     return parser.parse_args()
 
 def find_conf(appname):
@@ -54,14 +62,21 @@ def find_conf(appname):
 
 def main():
     options, args = parse_options()
-    tc = TerminalController()
-    cols = tc.COLS or 80
+    term = TerminalController()
+    cols = term.COLS or 80
 
-    conf_file = find_conf(basename(args[0]))
-    conf = load(open(conf_file))
+    if args:
+        config_name = options.config_name or basename(args[0])
+        source = pexpect.spawn(" ".join(args), cols=cols)
+    else:
+        source = sys.stdin
+        if not options.config_name:
+            print >>sys.stderr, term.render('${RED}ERROR:${NORMAL} When parsing stdin, you need to specify a config file!')
+            sys.exit(9)
+        config_name = options.config_name
 
-    child = pexpect.spawn(" ".join(args), cols=cols)
-    for line in child:
+    conf = load(open(find_conf(config_name)))
+    for line in source:
         line = line.strip()
         for rule in conf[STATE[-1]]:
             # rule defaults
@@ -83,7 +98,7 @@ def main():
                 if not continue_:
                     break
 
-        print tc.render(line)
+        print term.render(line)
 
 if __name__ == '__main__':
     main()
