@@ -112,7 +112,7 @@ Syntax
 
 ``grc`` uses YAML_ as config syntax. Comparing to ``.ini`` and ``json`` files
 (both included in the Python stdlib), this syntax lends itself much better to
-the requirements of this application [2]_.
+the requirements of this application.
 
 Basic structure
 ---------------
@@ -300,10 +300,6 @@ Footnotes
        however have two side-effects. First, ``stdout`` will be combined with
        ``stderr``. And second, terminal width may not be well respected.
 
-.. [2] `.ini` files come close, and I am still investigating this as an
-       alternative. But so far YAML seems better and more flexible.
-
-
 .. |pysetup-shot-b| image:: /screenshots/pysetup_before.png
 .. |pysetup-shot-a| image:: /screenshots/pysetup_after.png
 .. |aptitude-shot-b| image:: /screenshots/aptitude_before.png
@@ -313,5 +309,5 @@ Footnotes
 
 .. _Linux FHS: http://www.pathname.com/fhs/
 .. _source-code access: https://github.com/exhuma/grc
-.. _YAML: http://en.wikipedia.org/wiki/YAML
+.. _YAML: http://www.yaml.org
 .. _python regular expression: http://docs.python.org/library/re.html#regular-expression-syntax

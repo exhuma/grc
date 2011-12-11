@@ -74,14 +74,12 @@ the ANSI escape sequences.</p>
 </div>
 <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>When I was writing <tt class="docutils literal"><span class="pre">grc</span></tt> I wanted it to be free of dependencies. The
-rationale behind this is that you can safely install it into your system
-<em>without</em> using <tt class="docutils literal"><span class="pre">virtualenv</span></tt>. Only one external dependency remains (pyyaml),
-but I aim to remove that eventually.</p>
-<p>Given that <tt class="docutils literal"><span class="pre">pyyaml</span></tt> is a fairly harmless dependency (i.e. it&#8217;s not a big
-framework), installation into your system, even with this dependency should be
-safe.</p>
-<p>Installation is as easy as typing:</p>
+<p>Thanks to the liberal licensing of all third-party dependencies (pyyaml and
+pexpect) I could re-package them into the grc namespace. This makes <tt class="docutils literal"><span class="pre">grc</span></tt>
+completely standalone. As a result you can safely install it into the system
+(i.e. <em>without</em> using <tt class="docutils literal"><span class="pre">virtualenv</span></tt>) without the risk of breaking other
+packages.</p>
+<p>As a consequence, installation is as easy as typing:</p>
 <div class="highlight-python"><pre>pip install grc</pre>
 </div>
 <p>or:</p>
@@ -150,8 +148,8 @@ type.</p>
 TTY/PTY. To simplify the code, <tt class="docutils literal"><span class="pre">grc</span></tt> uses <tt class="docutils literal"><span class="pre">pexpect</span></tt> to do the IO
 magic.</li>
 <li><tt class="docutils literal"><span class="pre">stdout</span></tt> and <tt class="docutils literal"><span class="pre">stderr</span></tt> of the subprocess are combined into one
-stream, which is then emitten on grc&#8217;s <tt class="docutils literal"><span class="pre">stdout</span></tt>. <a class="footnote-reference" href="#id6" id="id3">[1]</a></li>
-<li>The output may not use all of the available terminal width. <a class="footnote-reference" href="#id6" id="id4">[1]</a></li>
+stream, which is then emitten on grc&#8217;s <tt class="docutils literal"><span class="pre">stdout</span></tt>. <a class="footnote-reference" href="#id5" id="id3">[1]</a></li>
+<li>The output may not use all of the available terminal width. <a class="footnote-reference" href="#id5" id="id4">[1]</a></li>
 </ul>
 </dd>
 </dl>
@@ -170,9 +168,9 @@ stream, which is then emitten on grc&#8217;s <tt class="docutils literal"><span 
 system-wide configs with your own concoctions.</p>
 <div class="section" id="syntax">
 <h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal"><span class="pre">grc</span></tt> uses <a class="reference external" href="http://en.wikipedia.org/wiki/YAML">YAML</a> as config syntax. Comparing to <tt class="docutils literal"><span class="pre">.ini</span></tt> and <tt class="docutils literal"><span class="pre">json</span></tt> files
+<p><tt class="docutils literal"><span class="pre">grc</span></tt> uses <a class="reference external" href="http://www.yaml.org">YAML</a> as config syntax. Comparing to <tt class="docutils literal"><span class="pre">.ini</span></tt> and <tt class="docutils literal"><span class="pre">json</span></tt> files
 (both included in the Python stdlib), this syntax lends itself much better to
-the requirements of this application <a class="footnote-reference" href="#id7" id="id5">[2]</a>.</p>
+the requirements of this application.</p>
 </div>
 <div class="section" id="basic-structure">
 <h2>Basic structure<a class="headerlink" href="#basic-structure" title="Permalink to this headline">¶</a></h2>
@@ -387,19 +385,12 @@ rule has been processed. If in the <tt class="docutils literal"><span class="pre
 </div>
 <div class="section" id="footnotes">
 <h1>Footnotes<a class="headerlink" href="#footnotes" title="Permalink to this headline">¶</a></h1>
-<table class="docutils footnote" frame="void" id="id6" rules="none">
+<table class="docutils footnote" frame="void" id="id5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> <tt class="docutils literal"><span class="pre">grc</span></tt> uses <tt class="docutils literal"><span class="pre">pyexpect</span></tt> to deal with TTY pecularities. This will
 however have two side-effects. First, <tt class="docutils literal"><span class="pre">stdout</span></tt> will be combined with
 <tt class="docutils literal"><span class="pre">stderr</span></tt>. And second, terminal width may not be well respected.</td></tr>
-</tbody>
-</table>
-<table class="docutils footnote" frame="void" id="id7" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id5">[2]</a></td><td><cite>.ini</cite> files come close, and I am still investigating this as an
-alternative. But so far YAML seems better and more flexible.</td></tr>
 </tbody>
 </table>
 </div>

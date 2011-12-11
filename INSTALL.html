@@ -45,14 +45,12 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>When I was writing <tt class="docutils literal"><span class="pre">grc</span></tt> I wanted it to be free of dependencies. The
-rationale behind this is that you can safely install it into your system
-<em>without</em> using <tt class="docutils literal"><span class="pre">virtualenv</span></tt>. Only one external dependency remains (pyyaml),
-but I aim to remove that eventually.</p>
-<p>Given that <tt class="docutils literal"><span class="pre">pyyaml</span></tt> is a fairly harmless dependency (i.e. it&#8217;s not a big
-framework), installation into your system, even with this dependency should be
-safe.</p>
-<p>Installation is as easy as typing:</p>
+<p>Thanks to the liberal licensing of all third-party dependencies (pyyaml and
+pexpect) I could re-package them into the grc namespace. This makes <tt class="docutils literal"><span class="pre">grc</span></tt>
+completely standalone. As a result you can safely install it into the system
+(i.e. <em>without</em> using <tt class="docutils literal"><span class="pre">virtualenv</span></tt>) without the risk of breaking other
+packages.</p>
+<p>As a consequence, installation is as easy as typing:</p>
 <div class="highlight-python"><pre>pip install grc</pre>
 </div>
 <p>or:</p>
