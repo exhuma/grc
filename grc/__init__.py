@@ -1,6 +1,6 @@
 from os.path import expanduser, join
 
-__version__='1.0b2'
+__version__='1.0b3'
 
 CONF_LOCATIONS = [
     join(expanduser('~'), '.grc', 'conf.d'),

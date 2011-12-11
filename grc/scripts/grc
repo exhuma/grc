@@ -14,14 +14,18 @@ from os.path import basename, exists, join
 from os import fdopen
 from optparse import OptionParser
 
-from grc.yaml import load
+import pkg_resources
 
+from grc.yaml import load
 from grc import pexpect, CONF_LOCATIONS
 from grc.term import TerminalController
 
 STATE = ['root']
 
-unbuffered = fdopen(sys.stdout.fileno(), 'w', 0)
+UNBUFFERED = fdopen(sys.stdout.fileno(), 'w', 0)
+
+# Add the installation folder to the config search path
+CONF_LOCATIONS.append(pkg_resources.resource_filename('grc', '../configs'))
 
 def parse_options():
     '''
@@ -56,7 +60,7 @@ def find_conf(appname):
             'Resolution order:\n   %s\n' % (
                 appname,
                 ',\n   '.join(CONF_LOCATIONS)))
-    sys.exit(0)
+    sys.exit(9)
 
 def main():
     options, args = parse_options()
@@ -99,7 +103,7 @@ def main():
                 if not continue_:
                     break
 
-        unbuffered.write(term.render(line) + "\n")
+        UNBUFFERED.write(term.render(line) + "\n")
 
 if __name__ == '__main__':
     main()

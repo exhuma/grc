@@ -1,5 +1,5 @@
 import os
-from os.path import join, exists
+from os.path import join
 
 from setuptools import setup, find_packages
 
@@ -9,19 +9,6 @@ DESCRIPTION = "Generic Colorizer"
 AUTHOR = "Michel Albert"
 AUTHOR_EMAIL = "michel@albert.lu"
 VERSION = __import__(PACKAGE).__version__
-CONF_FOLDER = None
-
-for folder in reversed(__import__(PACKAGE).CONF_LOCATIONS):
-    if not exists(folder):
-        try:
-            os.makedirs(folder)
-        except OSError:
-            # Try the next folder
-            continue
-    CONF_FOLDER = folder
-
-if not CONF_FOLDER:
-    raise UserWarning("Unable to find a writable location for the config files")
 
 setup(
     name=NAME,
@@ -33,7 +20,7 @@ setup(
     license="GPL",
     install_requires = [],
     data_files=[
-        (CONF_FOLDER, [join('configs', _) for _ in
+        ("configs", [join('configs', _) for _ in
             os.listdir('configs') if _[-1] != '~'])
         ],
     scripts = ['grc/scripts/grc'],
@@ -41,6 +28,3 @@ setup(
     zip_safe=False,
 )
 
-print "***"
-print "*** Config files have been stored in %s" % CONF_FOLDER
-print "***"
