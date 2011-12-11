@@ -33,8 +33,8 @@ setup(
     license="GPL",
     install_requires = [],
     data_files=[
-        (CONF_FOLDER, [join('examples', _) for _ in
-            os.listdir('examples') if _[-1] != '~'])
+        (CONF_FOLDER, [join('configs', _) for _ in
+            os.listdir('configs') if _[-1] != '~'])
         ],
     scripts = ['grc/scripts/grc'],
     packages=find_packages(exclude=["tests.*", "tests"]),
