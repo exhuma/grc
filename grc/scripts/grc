@@ -81,6 +81,8 @@ def main():
     conf = load(open(find_conf(config_name)))
     while True:
         line = sys.stdin.readline()
+        if not line:
+            break
         line = line.strip()
         for rule in conf[STATE[-1]]:
             # rule defaults
