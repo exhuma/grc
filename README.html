@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Generic Colorizer &mdash; grc 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="grc 1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="index.html">grc 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="generic-colorizer">
+<h1>Generic Colorizer<a class="headerlink" href="#generic-colorizer" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Inspired by <a class="reference external" href="http://kassiopeia.juls.savba.sk/~garabik/software/grc.html">http://kassiopeia.juls.savba.sk/~garabik/software/grc.html</a></p>
+</div>
+<p><tt class="docutils literal"><span class="pre">grc</span></tt> allows you to colorize (even transform) shell output.</p>
+</div>
+<div class="section" id="alternatives">
+<h1>Alternatives<a class="headerlink" href="#alternatives" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-original-grc">
+<h2>The original <tt class="docutils literal"><span class="pre">grc</span></tt><a class="headerlink" href="#the-original-grc" title="Permalink to this headline">¶</a></h2>
+<p>Available at <a class="reference external" href="http://kassiopeia.juls.savba.sk/~garabik/software/grc.html">http://kassiopeia.juls.savba.sk/~garabik/software/grc.html</a></p>
+<p>While the original <tt class="docutils literal"><span class="pre">grc</span></tt> is a bit smarter with subprocesses, this rewrite
+focuses on ease of use (including <a class="reference internal" href="#installation">Installation</a>, <a class="reference internal" href="#configuration">Configuration</a> and
+<a class="reference external" href="https://github.com/exhuma/grc">source-code access</a>).</p>
+<p>Installation should also honour the <a class="reference external" href="http://www.pathname.com/fhs/">Linux FHS</a></p>
+</div>
+<div class="section" id="sed-or-awk">
+<h2><tt class="docutils literal"><span class="pre">sed</span></tt> or <tt class="docutils literal"><span class="pre">awk</span></tt><a class="headerlink" href="#sed-or-awk" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">sed</span></tt> and <tt class="docutils literal"><span class="pre">awk</span></tt> are extremely powerful tools, and can certainly do what
+<tt class="docutils literal"><span class="pre">grc</span></tt> does. They will certainly perform better on large streams. It&#8217;s their
+intended use afterall. <em>However</em>, they both use an archaic and arcane syntax
+for their scripts. Additionally, if you would like to colorize your output
+with these, you need to work with ANSI escape sequences. <tt class="docutils literal"><span class="pre">grc</span></tt> aims to
+simplify this by having a more readable <a class="reference internal" href="#configuration">Configuration</a> syntax, and by hiding
+the ANSI escape sequences.</p>
+</div>
+</div>
+<div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>When I was writing <tt class="docutils literal"><span class="pre">grc</span></tt> I wanted it to be free of dependencies. The
+rationale behind this is that you can safely install it into your system
+<em>without</em> using <tt class="docutils literal"><span class="pre">virtualenv</span></tt>. Only one external dependency remains (pyyaml),
+but I aim to remove that eventually.</p>
+<p>Given that <tt class="docutils literal"><span class="pre">pyyaml</span></tt> is a fairly harmless dependency (i.e. it&#8217;s not a big
+framework), installation into your system, even with this dependency should be
+safe.</p>
+<p>Installation is as easy as typing:</p>
+<div class="highlight-python"><pre>pip install grc</pre>
+</div>
+<p>or:</p>
+<div class="highlight-python"><pre>easy_install grc</pre>
+</div>
+</div>
+<div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="read-lines-from-stdin-and-emit-modified-colorized-lines-on-stdout">
+<h2>Read lines from <tt class="docutils literal"><span class="pre">stdin</span></tt> and emit modified/colorized lines on <tt class="docutils literal"><span class="pre">stdout</span></tt><a class="headerlink" href="#read-lines-from-stdin-and-emit-modified-colorized-lines-on-stdout" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is the best supported mode of operation.</p>
+</div>
+<div class="section" id="synopsis">
+<h3>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><pre>&lt;some_process&gt; | grc -c &lt;config&gt;</pre>
+</div>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><pre>tail -f /var/log/apache2/access.log | grc -c apache_access</pre>
+</div>
+<dl class="docutils">
+<dt><strong>Advantages</strong></dt>
+<dd><ul class="first last simple">
+<li>Only the stream you are sending to <tt class="docutils literal"><span class="pre">grc</span></tt> is affected.</li>
+<li>No known side-effects</li>
+</ul>
+</dd>
+<dt><strong>Disadvantages</strong></dt>
+<dd><ul class="first last simple">
+<li>As <tt class="docutils literal"><span class="pre">grc</span></tt> only sees a stream, it cannot determine what application is
+emitting the stream. You have to specify the config manually.</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="spawn-a-subprocess-capture-it-s-output">
+<h2>Spawn a subprocess, capture it&#8217;s output<a class="headerlink" href="#spawn-a-subprocess-capture-it-s-output" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Use this if you don&#8217;t care about the downsides, and are lazy to
+type.</p>
+</div>
+<div class="section" id="id1">
+<h3>Synopsis<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><pre>grc &lt;some_procss&gt;</pre>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>Example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><pre>grc aptitude search python</pre>
+</div>
+<dl class="docutils">
+<dt><strong>Advantages</strong></dt>
+<dd><ul class="first last simple">
+<li>Much less to type</li>
+<li>Can auto-detect the config by using the sub-process application name.</li>
+</ul>
+</dd>
+<dt><strong>Disadvantages</strong></dt>
+<dd><ul class="first last simple">
+<li>Spawning a subprocess and interacting with it&#8217;s IO is non-trivial on a
+TTY/PTY. To simplify the code, <tt class="docutils literal"><span class="pre">grc</span></tt> uses <tt class="docutils literal"><span class="pre">pexpect</span></tt> to do the IO
+magic.</li>
+<li><tt class="docutils literal"><span class="pre">stdout</span></tt> and <tt class="docutils literal"><span class="pre">stderr</span></tt> of the subprocess are combined into one
+stream, which is then emitten on grc&#8217;s <tt class="docutils literal"><span class="pre">stdout</span></tt>. <a class="footnote-reference" href="#id6" id="id3">[1]</a></li>
+<li>The output may not use all of the available terminal width. <a class="footnote-reference" href="#id6" id="id4">[1]</a></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p><tt class="docutils literal"><span class="pre">grc</span></tt> searches three locations for configuration files in order:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">~/.grc/conf.d/&lt;confname&gt;.yml</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">/etc/grc/conf.d/&lt;confname&gt;.yml</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">/usr/share/grc/conf.d/&lt;confname&gt;.yml</span></tt></li>
+</ul>
+<p>The first matching config file wins. This means, you can override any
+system-wide configs with your own concoctions.</p>
+<div class="section" id="syntax">
+<h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">grc</span></tt> uses <a class="reference external" href="http://en.wikipedia.org/wiki/YAML">YAML</a> as config syntax. Comparing to <tt class="docutils literal"><span class="pre">.ini</span></tt> and <tt class="docutils literal"><span class="pre">json</span></tt> files
+(both included in the Python stdlib), this syntax lends itself much better to
+the requirements of this application <a class="footnote-reference" href="#id7" id="id5">[2]</a>.</p>
+</div>
+<div class="section" id="basic-structure">
+<h2>Basic structure<a class="headerlink" href="#basic-structure" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The config file is separated into sections (contexts). It has to have at least
+the <tt class="docutils literal"><span class="pre">root</span></tt> context.</li>
+<li>Each context has a list of rules. These rules fire if a line contains a
+given regular expresssion. The first matching rule wins.</li>
+<li>The line will then be replaced with the string contained in the <tt class="docutils literal"><span class="pre">replace</span></tt>
+value. You can use back-refs if you used capture groups in your regular
+expressions. Colours can be insterted using <tt class="docutils literal"><span class="pre">${COLOR_NAME}</span></tt>. You should
+always insert a <tt class="docutils literal"><span class="pre">${NORMAL}</span></tt> after using a color, to reset to the terminal
+default.</li>
+<li>Rules may define, that processing should <em>not</em> stop using the <tt class="docutils literal"><span class="pre">continue:</span>
+<span class="pre">yes</span></tt> flag. In that case, the same line will be matched with the following
+rule as well.</li>
+<li>Additionally, rules may &#8220;push&#8221; another context onto the stack. If that&#8217;s the
+case, the rule will be processed, and all following lines will be matched
+against rules contained in the context named by the <tt class="docutils literal"><span class="pre">push</span></tt> value.</li>
+<li>If in a non-root context, a rule may &#8220;pop&#8221; the current context from the
+stack using the <tt class="docutils literal"><span class="pre">pop:</span> <span class="pre">yes</span></tt> action.</li>
+</ul>
+<p>See <a class="reference internal" href="#config-reference">Config Reference</a> for more details.</p>
+</div>
+<div class="section" id="annotated-example">
+<h2>Annotated Example<a class="headerlink" href="#annotated-example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre># the primary context. This section must exist!
+root:
+    - match: '^(running)(.*)'
+      # demonstrating replacements /and/ colorizing
+      replace: '*** ${GREEN}\1${NORMAL}\2'
+
+    - match: '^(writing)(.*)'
+      replace: '&gt;&gt;&gt; ${YELLOW}\1${NORMAL}\2'
+
+    - match: '^(reading)(.*)'
+      replace: '&lt;&lt;&lt; ${BLUE}\1${NORMAL}\2'
+
+    - match: '^(Processing dependencies for)(.*)'
+      replace: '${GREEN}\1${NORMAL}\2'
+      # switch to the "dependencies" context
+      push: dependencies
+
+    - match: '^(Installing.*)'
+      replace: '&gt;&gt;&gt; ${GREEN}\1${NORMAL}'
+
+# the "dependencies" context
+dependencies:
+    - match: '^(Finished processing dependencies for)(.*)'
+      replace: '${GREEN}\1${NORMAL}\2'
+      # Revert back to the "root" context
+      pop: yes
+
+    - match: '^(Searching for )(.*)$'
+      replace: '\1${BLUE}\2${NORMAL}'
+      # switch to the "dependency" context
+      push: dependency
+
+# the "dependency" context
+dependency:
+    # Let's prepend all lines with a small indent and pipe.
+    # To do this, we specify a "match-all" regex, replace the line, and
+    # specify that we will continue with the next matching rule using
+    # "continue"
+    - match: '(.*)'
+      replace: ' | \1'
+      continue: yes
+
+    # Note that after the above rule, all lines are prepended with
+    # additional text. We need to include this in the regex!
+    - match: '^ \| (Installing.*)'
+      replace: ' | &gt;&gt;&gt; ${GREEN}\1${NORMAL}'
+
+    - match: '^ \| (Running.*)'
+      replace: ' | ${GREEN}\1${NORMAL}'
+
+    - match: '^ \| (Best match.*)'
+      replace: ' | ${GREEN}\1${NORMAL}'
+
+    - match: '^ \| (WARNING|warning)'
+      replace: ' | ${YELLOW}\1${NORMAL}'
+
+    - match: '^ \| Installed(.*)'
+      replace: ' | Installed\1\n'
+      pop: yes</pre>
+</div>
+</div>
+</div>
+<div class="section" id="config-reference">
+<h1>Config Reference<a class="headerlink" href="#config-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="main-level">
+<h2>Main Level<a class="headerlink" href="#main-level" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><strong>root</strong></dt>
+<dd>Specifies the primary context</dd>
+</dl>
+<p>All other keys represent a context you <tt class="docutils literal"><span class="pre">pushed</span></tt> somewhere.</p>
+</div>
+<div class="section" id="contexts">
+<h2>Contexts<a class="headerlink" href="#contexts" title="Permalink to this headline">¶</a></h2>
+<p>A context is simply a list of rules</p>
+</div>
+<div class="section" id="rules">
+<h2>Rules<a class="headerlink" href="#rules" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><strong>match</strong></dt>
+<dd><p class="first"><em>Type</em>: <tt class="docutils literal"><span class="pre">string</span></tt></p>
+<p>A <a class="reference external" href="http://docs.python.org/library/re.html#regular-expression-syntax">python regular expression</a>. If this matches somewhere in the input
+line, all occurrences will be replaced with the string specified in
+<tt class="docutils literal"><span class="pre">replace</span></tt>.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">While YAML does not enforce you to enclose strings in quotes, I
+is strongly recommend you use <strong>single</strong> quotes for regexps to
+avoid trouble with string escapes (backslashes).</p>
+</div>
+</dd>
+<dt><strong>replace</strong></dt>
+<dd><p class="first"><em>Type</em>: <tt class="docutils literal"><span class="pre">string</span></tt></p>
+<p>If <tt class="docutils literal"><span class="pre">continue</span></tt> is false (the default), this string will be emitted to
+<tt class="docutils literal"><span class="pre">stdout</span></tt>. Otherwise, this string will be passed to the next matching
+rule. Not that the following rule sees the <em>modified</em> string!</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">While YAML does not enforce you to enclose strings in quotes, I
+is recommend using <strong>single</strong> quotes if using backreferences
+(backslashes).</p>
+</div>
+</dd>
+<dt><strong>continue</strong></dt>
+<dd><p class="first"><em>Type</em>: <tt class="docutils literal"><span class="pre">boolean</span></tt></p>
+<p class="last">If true, don&#8217;t write the string yet to <tt class="docutils literal"><span class="pre">stdout</span></tt>. Instead, pass it on to
+the next matching rule.</p>
+</dd>
+<dt><strong>push</strong></dt>
+<dd><p class="first"><em>Type</em>: <tt class="docutils literal"><span class="pre">string</span></tt></p>
+<p>Pushes a new context onto the stack. All following lines from <tt class="docutils literal"><span class="pre">stdin</span></tt>
+will be matched agains rules in the new context.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This may change in a future release to give you yet more control</p>
+</div>
+</dd>
+<dt><strong>pop</strong></dt>
+<dd><p class="first"><em>Type</em>: <tt class="docutils literal"><span class="pre">boolean</span></tt></p>
+<p>If this is set to true, then return to the previous context after this
+rule has been processed. If in the <tt class="docutils literal"><span class="pre">root</span></tt> context, this is a no-op.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This may change in a future release to give you yet more control</p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="screenshots">
+<h1>Screenshots<a class="headerlink" href="#screenshots" title="Permalink to this headline">¶</a></h1>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">A python setup session</th>
+</tr>
+<tr class="row-even"><th class="head">Before</th>
+<th class="head">After</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td><img alt="pysetup-shot-b" src="_images/pysetup_before.png" /></td>
+<td><img alt="pysetup-shot-a" src="_images/pysetup_after.png" /></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">Simple aptitude search</th>
+</tr>
+<tr class="row-even"><th class="head">Before</th>
+<th class="head">After</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td><img alt="aptitude-shot-b" src="_images/aptitude_before.png" /></td>
+<td><img alt="aptitude-shot-a" src="_images/aptitude_after.png" /></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">Apache access_log</th>
+</tr>
+<tr class="row-even"><th class="head">Before</th>
+<th class="head">After</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td><img alt="apache_access-shot-b" src="_images/apache_access_before.png" /></td>
+<td><img alt="apache_access-shot-a" src="_images/apache_access_after.png" /></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="footnotes">
+<h1>Footnotes<a class="headerlink" href="#footnotes" title="Permalink to this headline">¶</a></h1>
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> <tt class="docutils literal"><span class="pre">grc</span></tt> uses <tt class="docutils literal"><span class="pre">pyexpect</span></tt> to deal with TTY pecularities. This will
+however have two side-effects. First, <tt class="docutils literal"><span class="pre">stdout</span></tt> will be combined with
+<tt class="docutils literal"><span class="pre">stderr</span></tt>. And second, terminal width may not be well respected.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id7" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[2]</a></td><td><cite>.ini</cite> files come close, and I am still investigating this as an
+alternative. But so far YAML seems better and more flexible.</td></tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Generic Colorizer</a></li>
+<li><a class="reference internal" href="#alternatives">Alternatives</a><ul>
+<li><a class="reference internal" href="#the-original-grc">The original <tt class="docutils literal"><span class="pre">grc</span></tt></a></li>
+<li><a class="reference internal" href="#sed-or-awk"><tt class="docutils literal"><span class="pre">sed</span></tt> or <tt class="docutils literal"><span class="pre">awk</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#read-lines-from-stdin-and-emit-modified-colorized-lines-on-stdout">Read lines from <tt class="docutils literal"><span class="pre">stdin</span></tt> and emit modified/colorized lines on <tt class="docutils literal"><span class="pre">stdout</span></tt></a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#spawn-a-subprocess-capture-it-s-output">Spawn a subprocess, capture it&#8217;s output</a><ul>
+<li><a class="reference internal" href="#id1">Synopsis</a></li>
+<li><a class="reference internal" href="#id2">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#syntax">Syntax</a></li>
+<li><a class="reference internal" href="#basic-structure">Basic structure</a></li>
+<li><a class="reference internal" href="#annotated-example">Annotated Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#config-reference">Config Reference</a><ul>
+<li><a class="reference internal" href="#main-level">Main Level</a></li>
+<li><a class="reference internal" href="#contexts">Contexts</a></li>
+<li><a class="reference internal" href="#rules">Rules</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#screenshots">Screenshots</a></li>
+<li><a class="reference internal" href="#footnotes">Footnotes</a></li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/README.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="index.html">grc 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Michel Albert.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
