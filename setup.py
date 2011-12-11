@@ -9,9 +9,19 @@ DESCRIPTION = "Generic Colorizer"
 AUTHOR = "Michel Albert"
 AUTHOR_EMAIL = "michel@albert.lu"
 VERSION = __import__(PACKAGE).__version__
+CONF_FOLDER = None
 
-if not exists('/usr/share/grc/conf.d'):
-    os.makedirs('/usr/share/grc/conf.d')
+for folder in reversed(__import__(PACKAGE).CONF_LOCATIONS):
+    if not exists(folder):
+        try:
+            os.makedirs(folder)
+        except OSError:
+            # Try the next folder
+            continue
+    CONF_FOLDER = folder
+
+if not CONF_FOLDER:
+    raise UserWarning("Unable to find a writable location for the config files")
 
 setup(
     name=NAME,
@@ -21,11 +31,9 @@ setup(
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     license="GPL",
-    install_requires = [
-        'pyyaml'
-      ],
+    install_requires = [],
     data_files=[
-        ('/usr/share/grc/conf.d', [join('examples', _) for _ in
+        (CONF_FOLDER, [join('examples', _) for _ in
             os.listdir('examples') if _[-1] != '~'])
         ],
     scripts = ['grc/scripts/grc'],
@@ -33,3 +41,6 @@ setup(
     zip_safe=False,
 )
 
+print "***"
+print "*** Config files have been stored in %s" % CONF_FOLDER
+print "***"

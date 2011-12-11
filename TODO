@@ -1,2 +1,0 @@
-- Consider using the builtin ConfigParser instead of pyyaml to remove the
-  third-party library dependency.
