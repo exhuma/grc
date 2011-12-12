@@ -20,7 +20,7 @@ setup(
     license="GPL",
     install_requires = [],
     data_files=[
-        ("configs", [join('configs', _) for _ in
+        ("/usr/share/grc/conf.d", [join('configs', _) for _ in
             os.listdir('configs') if _[-1] != '~'])
         ],
     scripts = ['grc/scripts/grc'],

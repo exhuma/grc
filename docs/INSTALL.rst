@@ -9,9 +9,14 @@ packages.
 
 As a consequence, installation is as easy as typing::
 
-    pip install grc
+    sudo pip install grc
 
 or::
 
-    easy_install grc
+    sudo python setup.py install
 
+.. note:: ``easy_install`` will probably complain about a SandboxViolation
+          because the installation needs to write to ``/usr/share/grc`` which
+          is outside of the environment supported by ``easy_install``. If
+          possible, use ``pip``. If you are still on an older system, run the
+          setup script manually as outlined above.
