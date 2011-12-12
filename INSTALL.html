@@ -1,31 +1,25 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; grc 1.0 documentation</title>
-    
+    <title>Installation &mdash; grc v1.0 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    '#',
         VERSION:     '1.0',
-        COLLAPSE_INDEX: false,
+        COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="grc 1.0 documentation" href="index.html" /> 
+    <link rel="top" title="grc v1.0 documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,7 +28,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="index.html">grc 1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">grc v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,10 +45,18 @@ completely standalone. As a result you can safely install it into the system
 (i.e. <em>without</em> using <tt class="docutils literal"><span class="pre">virtualenv</span></tt>) without the risk of breaking other
 packages.</p>
 <p>As a consequence, installation is as easy as typing:</p>
-<div class="highlight-python"><pre>pip install grc</pre>
+<div class="highlight-python"><pre>sudo pip install grc</pre>
 </div>
 <p>or:</p>
-<div class="highlight-python"><pre>easy_install grc</pre>
+<div class="highlight-python"><pre>sudo python setup.py install</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">easy_install</span></tt> will probably complain about a SandboxViolation
+because the installation needs to write to <tt class="docutils literal"><span class="pre">/usr/share/grc</span></tt> which
+is outside of the environment supported by <tt class="docutils literal"><span class="pre">easy_install</span></tt>. If
+possible, use <tt class="docutils literal"><span class="pre">pip</span></tt>. If you are still on an older system, run the
+setup script manually as outlined above.</p>
 </div>
 </div>
 
@@ -64,24 +66,24 @@ packages.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/INSTALL.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/INSTALL.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -92,12 +94,12 @@ packages.</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="index.html">grc 1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">grc v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, Michel Albert.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      &copy; Copyright 2011, Michel Albert.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>
 </html>

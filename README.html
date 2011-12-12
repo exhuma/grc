@@ -1,31 +1,25 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Generic Colorizer &mdash; grc 1.0 documentation</title>
-    
+    <title>Generic Colorizer &mdash; grc v1.0 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    '#',
         VERSION:     '1.0',
-        COLLAPSE_INDEX: false,
+        COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="grc 1.0 documentation" href="index.html" /> 
+    <link rel="top" title="grc v1.0 documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,7 +28,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="index.html">grc 1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">grc v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -80,10 +74,18 @@ completely standalone. As a result you can safely install it into the system
 (i.e. <em>without</em> using <tt class="docutils literal"><span class="pre">virtualenv</span></tt>) without the risk of breaking other
 packages.</p>
 <p>As a consequence, installation is as easy as typing:</p>
-<div class="highlight-python"><pre>pip install grc</pre>
+<div class="highlight-python"><pre>sudo pip install grc</pre>
 </div>
 <p>or:</p>
-<div class="highlight-python"><pre>easy_install grc</pre>
+<div class="highlight-python"><pre>sudo python setup.py install</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">easy_install</span></tt> will probably complain about a SandboxViolation
+because the installation needs to write to <tt class="docutils literal"><span class="pre">/usr/share/grc</span></tt> which
+is outside of the environment supported by <tt class="docutils literal"><span class="pre">easy_install</span></tt>. If
+possible, use <tt class="docutils literal"><span class="pre">pip</span></tt>. If you are still on an older system, run the
+setup script manually as outlined above.</p>
 </div>
 </div>
 <div class="section" id="usage">
@@ -334,14 +336,14 @@ rule has been processed. If in the <tt class="docutils literal"><span class="pre
 <col width="50%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="2">A python setup session</th>
+<tr><th class="head" colspan="2">A python setup session</th>
 </tr>
-<tr class="row-even"><th class="head">Before</th>
+<tr><th class="head">Before</th>
 <th class="head">After</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-odd"><td><img alt="pysetup-shot-b" src="_images/pysetup_before.png" /></td>
+<tr><td><img alt="pysetup-shot-b" src="_images/pysetup_before.png" /></td>
 <td><img alt="pysetup-shot-a" src="_images/pysetup_after.png" /></td>
 </tr>
 </tbody>
@@ -352,14 +354,14 @@ rule has been processed. If in the <tt class="docutils literal"><span class="pre
 <col width="50%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="2">Simple aptitude search</th>
+<tr><th class="head" colspan="2">Simple aptitude search</th>
 </tr>
-<tr class="row-even"><th class="head">Before</th>
+<tr><th class="head">Before</th>
 <th class="head">After</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-odd"><td><img alt="aptitude-shot-b" src="_images/aptitude_before.png" /></td>
+<tr><td><img alt="aptitude-shot-b" src="_images/aptitude_before.png" /></td>
 <td><img alt="aptitude-shot-a" src="_images/aptitude_after.png" /></td>
 </tr>
 </tbody>
@@ -370,14 +372,14 @@ rule has been processed. If in the <tt class="docutils literal"><span class="pre
 <col width="50%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="2">Apache access_log</th>
+<tr><th class="head" colspan="2">Apache access_log</th>
 </tr>
-<tr class="row-even"><th class="head">Before</th>
+<tr><th class="head">Before</th>
 <th class="head">After</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-odd"><td><img alt="apache_access-shot-b" src="_images/apache_access_before.png" /></td>
+<tr><td><img alt="apache_access-shot-b" src="_images/apache_access_before.png" /></td>
 <td><img alt="apache_access-shot-a" src="_images/apache_access_after.png" /></td>
 </tr>
 </tbody>
@@ -401,62 +403,62 @@ however have two side-effects. First, <tt class="docutils literal"><span class="
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Generic Colorizer</a></li>
-<li><a class="reference internal" href="#alternatives">Alternatives</a><ul>
-<li><a class="reference internal" href="#the-original-grc">The original <tt class="docutils literal"><span class="pre">grc</span></tt></a></li>
-<li><a class="reference internal" href="#sed-or-awk"><tt class="docutils literal"><span class="pre">sed</span></tt> or <tt class="docutils literal"><span class="pre">awk</span></tt></a></li>
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Generic Colorizer</a></li>
+<li><a class="reference external" href="#alternatives">Alternatives</a><ul>
+<li><a class="reference external" href="#the-original-grc">The original <tt class="docutils literal"><span class="pre">grc</span></tt></a></li>
+<li><a class="reference external" href="#sed-or-awk"><tt class="docutils literal"><span class="pre">sed</span></tt> or <tt class="docutils literal"><span class="pre">awk</span></tt></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#usage">Usage</a><ul>
-<li><a class="reference internal" href="#read-lines-from-stdin-and-emit-modified-colorized-lines-on-stdout">Read lines from <tt class="docutils literal"><span class="pre">stdin</span></tt> and emit modified/colorized lines on <tt class="docutils literal"><span class="pre">stdout</span></tt></a><ul>
-<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
-<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference external" href="#installation">Installation</a></li>
+<li><a class="reference external" href="#usage">Usage</a><ul>
+<li><a class="reference external" href="#read-lines-from-stdin-and-emit-modified-colorized-lines-on-stdout">Read lines from <tt class="docutils literal"><span class="pre">stdin</span></tt> and emit modified/colorized lines on <tt class="docutils literal"><span class="pre">stdout</span></tt></a><ul>
+<li><a class="reference external" href="#synopsis">Synopsis</a></li>
+<li><a class="reference external" href="#example">Example</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#spawn-a-subprocess-capture-it-s-output">Spawn a subprocess, capture it&#8217;s output</a><ul>
-<li><a class="reference internal" href="#id1">Synopsis</a></li>
-<li><a class="reference internal" href="#id2">Example</a></li>
+<li><a class="reference external" href="#spawn-a-subprocess-capture-it-s-output">Spawn a subprocess, capture it&#8217;s output</a><ul>
+<li><a class="reference external" href="#id1">Synopsis</a></li>
+<li><a class="reference external" href="#id2">Example</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#configuration">Configuration</a><ul>
-<li><a class="reference internal" href="#syntax">Syntax</a></li>
-<li><a class="reference internal" href="#basic-structure">Basic structure</a></li>
-<li><a class="reference internal" href="#annotated-example">Annotated Example</a></li>
+<li><a class="reference external" href="#configuration">Configuration</a><ul>
+<li><a class="reference external" href="#syntax">Syntax</a></li>
+<li><a class="reference external" href="#basic-structure">Basic structure</a></li>
+<li><a class="reference external" href="#annotated-example">Annotated Example</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#config-reference">Config Reference</a><ul>
-<li><a class="reference internal" href="#main-level">Main Level</a></li>
-<li><a class="reference internal" href="#contexts">Contexts</a></li>
-<li><a class="reference internal" href="#rules">Rules</a></li>
+<li><a class="reference external" href="#config-reference">Config Reference</a><ul>
+<li><a class="reference external" href="#main-level">Main Level</a></li>
+<li><a class="reference external" href="#contexts">Contexts</a></li>
+<li><a class="reference external" href="#rules">Rules</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#screenshots">Screenshots</a></li>
-<li><a class="reference internal" href="#footnotes">Footnotes</a></li>
+<li><a class="reference external" href="#screenshots">Screenshots</a></li>
+<li><a class="reference external" href="#footnotes">Footnotes</a></li>
 </ul>
 
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/README.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/README.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -467,12 +469,12 @@ however have two side-effects. First, <tt class="docutils literal"><span class="
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="index.html">grc 1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">grc v1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, Michel Albert.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      &copy; Copyright 2011, Michel Albert.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>
 </html>
