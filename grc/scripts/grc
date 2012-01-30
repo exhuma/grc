@@ -82,7 +82,6 @@ def main():
         line = source.readline()
         if not line:
             break
-        line = line.strip()
         for rule in conf[STATE[-1]]:
             # rule defaults
             regex = re.compile(rule.get('match', r'^.*$'))
@@ -103,7 +102,7 @@ def main():
                 if not continue_:
                     break
 
-        UNBUFFERED.write(term.render(line) + "\n")
+        UNBUFFERED.write(term.render(line))
 
 if __name__ == '__main__':
     main()
