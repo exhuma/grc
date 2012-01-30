@@ -79,7 +79,7 @@ def main():
 
     conf = load(open(find_conf(config_name)))
     while True:
-        line = sys.stdin.readline()
+        line = source.readline()
         if not line:
             break
         line = line.strip()
