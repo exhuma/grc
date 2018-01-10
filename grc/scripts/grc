@@ -8,21 +8,21 @@ TODO
     - Allow for pop "before" and "after"
 """
 
-import sys
 import re
-from os.path import basename, exists, join
-from os import fdopen
+import sys
 from optparse import OptionParser
+from os.path import basename, exists, join
 
 import pkg_resources
 
-from grc.yaml import load
-from grc import pexpect, CONF_LOCATIONS
+import pexpect
+from grc import CONF_LOCATIONS
 from grc.term import TerminalController
+from yaml import load
 
 STATE = ['root']
 
-UNBUFFERED = fdopen(sys.stdout.fileno(), 'w', 0)
+LINE_BUFFERED = open(sys.stdout.fileno(), 'w', buffering=1)
 
 # Add the installation folder to the config search path
 CONF_LOCATIONS.append(pkg_resources.resource_filename('grc', '../configs'))
@@ -73,7 +73,7 @@ def main():
     else:
         source = sys.stdin
         if not options.config_name:
-            print >>sys.stderr, term.render('${RED}ERROR:${NORMAL} When parsing stdin, you need to specify a config file!')
+            print(term.render('${RED}ERROR:${NORMAL} When parsing stdin, you need to specify a config file!'), file=sys.stderr)
             sys.exit(9)
         config_name = options.config_name
 
@@ -102,7 +102,7 @@ def main():
                 if not continue_:
                     break
 
-        UNBUFFERED.write(term.render(line))
+        LINE_BUFFERED.write(term.render(line))
 
 if __name__ == '__main__':
     main()
