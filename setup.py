@@ -18,7 +18,10 @@ setup(
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     license="GPL",
-    install_requires = [],
+    install_requires = [
+        'pexpect',
+        'pyyaml',
+    ],
     data_files=[
         ("/usr/share/grc/conf.d", [join('configs', _) for _ in
             os.listdir('configs') if _[-1] != '~'])
