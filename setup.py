@@ -29,6 +29,7 @@ setup(
     author_email=AUTHOR_EMAIL,
     license="GPL",
     install_requires = [
+        'blessings',
         'pexpect',
         'pyyaml',
     ],

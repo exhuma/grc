@@ -1,27 +1,27 @@
 root:
     - match: '^(running)(.*)'
-      replace: '*** ${GREEN}\1${NORMAL}\2'
+      replace: '*** {t.green}\1{t.normal}\2'
 
     - match: '^(writing)(.*)'
-      replace: '>>> ${YELLOW}\1${NORMAL}\2'
+      replace: '>>> {t.yellow}\1{t.normal}\2'
 
     - match: '^(reading)(.*)'
-      replace: '<<< ${BLUE}\1${NORMAL}\2'
+      replace: '<<< {t.blue}\1{t.normal}\2'
 
     - match: '^(Processing dependencies for)(.*)'
-      replace: '${GREEN}\1${NORMAL}\2'
+      replace: '{t.green}\1{t.normal}\2'
       push: dependencies
 
     - match: '^(Installing.*)'
-      replace: '>>> ${GREEN}\1${NORMAL}'
+      replace: '>>> {t.green}\1{t.normal}'
 
 dependencies:
     - match: '^(Finished processing dependencies for)(.*)'
-      replace: '${GREEN}\1${NORMAL}\2'
+      replace: '{t.green}\1{t.normal}\2'
       pop: yes
 
     - match: '^(Searching for )(.*)$'
-      replace: '\1${BLUE}\2${NORMAL}'
+      replace: '\1{t.blue}\2{t.normal}'
       push: dependency
 
 dependency:
@@ -30,16 +30,16 @@ dependency:
       continue: yes
 
     - match: '^ \| (Installing.*)'
-      replace: ' | >>> ${GREEN}\1${NORMAL}'
+      replace: ' | >>> {t.green}\1{t.normal}'
 
     - match: '^ \| (Running.*)'
-      replace: ' | ${GREEN}\1${NORMAL}'
+      replace: ' | {t.green}\1{t.normal}'
 
     - match: '^ \| (Best match.*)'
-      replace: ' | ${GREEN}\1${NORMAL}'
+      replace: ' | {t.green}\1{t.normal}'
 
     - match: '^ \| (WARNING|warning)'
-      replace: ' | ${YELLOW}\1${NORMAL}'
+      replace: ' | {t.yellow}\1{t.normal}'
 
     - match: '^ \| Installed(.*)'
       replace: ' | Installed\1\n'

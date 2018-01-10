@@ -13,12 +13,12 @@ import sys
 from optparse import OptionParser
 from os.path import basename, exists, join
 
-import pkg_resources
-
 import pexpect
-from grc import CONF_LOCATIONS
-from grc.term import TerminalController
+import pkg_resources
+from blessings import Terminal
 from yaml import load
+
+from grc import CONF_LOCATIONS
 
 STATE = ['root']
 
@@ -64,8 +64,8 @@ def find_conf(appname):
 
 def main():
     options, args = parse_options()
-    term = TerminalController()
-    cols = term.COLS or 80
+    term = Terminal()
+    cols = term.width or 80
 
     if args:
         config_name = options.config_name or basename(args[0])
@@ -73,7 +73,8 @@ def main():
     else:
         source = sys.stdin
         if not options.config_name:
-            print(term.render('${RED}ERROR:${NORMAL} When parsing stdin, you need to specify a config file!'), file=sys.stderr)
+            print('${t.red}ERROR:${t.normal} When parsing stdin, you need to '
+                  'specify a config file!'.format(t=term), file=sys.stderr)
             sys.exit(9)
         config_name = options.config_name
 
@@ -104,7 +105,7 @@ def main():
                 if not continue_:
                     break
 
-        LINE_BUFFERED.write(term.render(line))
+        LINE_BUFFERED.write(line.format(t=term))
 
 if __name__ == '__main__':
     main()
