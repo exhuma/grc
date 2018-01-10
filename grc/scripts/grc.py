@@ -77,7 +77,9 @@ def main():
             sys.exit(9)
         config_name = options.config_name
 
-    conf = load(open(find_conf(config_name)))
+    with open(find_conf(config_name)) as fptr:
+        conf = load(fptr)
+
     while True:
         line = source.readline()
         if not line:
