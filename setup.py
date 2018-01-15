@@ -54,7 +54,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'grc=grc.scripts.grc:main'
+            'grc=grc.core:main'
         ]
     },
     data_files=[
