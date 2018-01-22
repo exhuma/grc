@@ -12,4 +12,5 @@ name = "pypi"
 [packages]
 
 blessings = "*"
+pexpect = "*"
 pyyaml = "*"
