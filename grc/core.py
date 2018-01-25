@@ -10,7 +10,7 @@ TODO
 
 import re
 import sys
-from optparse import OptionParser
+from argparse import ArgumentParser
 from os.path import basename, exists, join
 
 import pexpect
@@ -25,16 +25,27 @@ STATE = ['root']
 # Add the installation folder to the config search path
 CONF_LOCATIONS.append(pkg_resources.resource_filename('grc', '../configs'))
 
-
-def parse_options():
+def parse_args():
     '''
     Returns a tuple of command-line options and remaining arguments (see
     optparse)
     '''
-    parser = OptionParser()
-    parser.add_option("-c", "--config", dest="config_name",
-                      help="Use NAME as config-name. Overrides auto-detection. The file should exist in the folders searched for configs. See :meth:find_conf(name)",
-                      metavar="NAME")
+    parser = ArgumentParser()
+    parser.add_argument(
+        "-c",
+        "--config",
+        dest="config_name",
+        help=("Use NAME as config-name. Overrides auto-detection. The file "
+              "should exist in the folders searched for configs."),
+        metavar="NAME")
+    parser.add_argument(
+        "cmd",
+        help="The command to run and colorize.",
+        nargs=1)
+    parser.add_argument(
+        "cmdargs",
+        help="Arguments passed onto the subcommand.",
+        nargs='*')
     return parser.parse_args()
 
 
@@ -64,20 +75,22 @@ def find_conf(appname):
 
 
 def run(stream):
-    options, args = parse_options()
+    args = parse_args()
     term = Terminal()
     cols = term.width or 80
 
     if args:
-        config_name = options.config_name or basename(args[0])
-        source = pexpect.spawn(" ".join(args), cols=cols, maxread=1)
+        cmd = basename(args.cmd[0])
+        config_name = args.config_name or cmd
+        source = pexpect.spawn(" ".join([cmd] + args.cmdargs),
+                               maxread=1)
     else:
         source = sys.stdin
-        if not options.config_name:
+        if not args.config_name:
             print('${t.red}ERROR:${t.normal} When parsing stdin, you need to '
                   'specify a config file!'.format(t=term), file=sys.stderr)
             sys.exit(9)
-        config_name = options.config_name
+        config_name = args.config_name
 
     with open(find_conf(config_name)) as fptr:
         conf = load(fptr, Loader=SafeLoader)
