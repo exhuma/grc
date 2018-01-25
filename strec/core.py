@@ -15,12 +15,10 @@ from os.path import basename, exists, join
 
 import pexpect
 import pkg_resources
-from yaml import SafeLoader, load
 
 from blessings import Terminal
 from strec import CONF_LOCATIONS
-
-STATE = ["root"]
+from strec.colorizers import Colorizer
 
 # Add the installation folder to the config search path
 CONF_LOCATIONS.append(pkg_resources.resource_filename("strec", "../configs"))
@@ -100,7 +98,7 @@ def load_config(config_name):
     return conf
 
 
-def process_lines(source, stream, conf, term):
+def process_lines(source, colorizer, stream, term):
     """
     Read lines from *source* and process them until an empty-line is read.
     """
@@ -108,7 +106,7 @@ def process_lines(source, stream, conf, term):
         line = source.readline()
         if not line:
             break
-        line = process_line(line, conf)
+        line = colorizer.process(line)
         stream.write(line.format(t=term))
 
 
@@ -136,16 +134,18 @@ def run(stream, args):
 
     if args.cmd:
         cmd = basename(args.cmd[0])
+        colorizer = Colorizer.from_basename(cmd)
         config_name = args.config_name or cmd
         cmdargs = args.cmd[1:]
         source = create_pty(cmd, cmdargs)
     else:
+        colorizer = Colorizer.from_config(args.config_name)
         source = create_stdin(args.config_name, term)
         config_name = args.config_name
 
     conf = load_config(config_name)
 
-    process_lines(source, stream, conf, term)
+    process_lines(source, colorizer, stream, term)
 
 
 def main():  # pragma: no cover
