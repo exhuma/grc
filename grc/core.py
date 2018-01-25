@@ -77,13 +77,13 @@ def find_conf(appname):
 def run(stream):
     args = parse_args()
     term = Terminal()
-    cols = term.width or 80
 
     if args:
         cmd = basename(args.cmd[0])
         config_name = args.config_name or cmd
         source = pexpect.spawn(" ".join([cmd] + args.cmdargs),
-                               maxread=1)
+                               maxread=1,
+                               encoding='utf8')
     else:
         source = sys.stdin
         if not args.config_name:
