@@ -15,9 +15,9 @@ from os.path import basename, exists, join
 
 import pexpect
 import pkg_resources
-from blessings import Terminal
-from yaml import load
+from yaml import SafeLoader, load
 
+from blessings import Terminal
 from grc import CONF_LOCATIONS
 
 STATE = ['root']
@@ -79,7 +79,7 @@ def main():
         config_name = options.config_name
 
     with open(find_conf(config_name)) as fptr:
-        conf = load(fptr)
+        conf = load(fptr, Loader=SafeLoader)
 
     while True:
         line = source.readline()
