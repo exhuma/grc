@@ -123,9 +123,11 @@ Basic structure
   given regular expresssion. The first matching rule wins.
 * The line will then be replaced with the string contained in the ``replace``
   value. You can use back-refs if you used capture groups in your regular
-  expressions. Colours can be insterted using ``${COLOR_NAME}``. You should
-  always insert a ``${NORMAL}`` after using a color, to reset to the terminal
-  default.
+  expressions. Colours can be insterted using ``${t.color_name}``. You should
+  always insert a ``${t.normal}`` after using a color, to reset to the terminal
+  default. The colors are provided by the package blessings_. The ``t``
+  variable is a reference to a ``blessings`` terminal instance so you should be
+  able to use it as it is documented on the ``blessings`` homepage.
 * Rules may define, that processing should *not* stop using the ``continue:
   yes`` flag. In that case, the same line will be matched with the following
   rule as well.
@@ -134,6 +136,8 @@ Basic structure
   against rules contained in the context named by the ``push`` value.
 * If in a non-root context, a rule may "pop" the current context from the
   stack using the ``pop: yes`` action.
+
+.. _blessings: https://github.com/erikrose/blessings
 
 See `Config Reference`_ for more details.
 
@@ -146,31 +150,31 @@ Annotated Example
     root:
         - match: '^(running)(.*)'
           # demonstrating replacements /and/ colorizing
-          replace: '*** ${GREEN}\1${NORMAL}\2'
+          replace: '*** ${t.green}\1${t.normal}\2'
 
         - match: '^(writing)(.*)'
-          replace: '>>> ${YELLOW}\1${NORMAL}\2'
+          replace: '>>> ${t.yellow}\1${t.normal}\2'
 
         - match: '^(reading)(.*)'
-          replace: '<<< ${BLUE}\1${NORMAL}\2'
+          replace: '<<< ${t.blue}\1${t.normal}\2'
 
         - match: '^(Processing dependencies for)(.*)'
-          replace: '${GREEN}\1${NORMAL}\2'
+          replace: '${t.green}\1${t.normal}\2'
           # switch to the "dependencies" context
           push: dependencies
 
         - match: '^(Installing.*)'
-          replace: '>>> ${GREEN}\1${NORMAL}'
+          replace: '>>> ${t.green}\1${t.normal}'
 
     # the "dependencies" context
     dependencies:
         - match: '^(Finished processing dependencies for)(.*)'
-          replace: '${GREEN}\1${NORMAL}\2'
+          replace: '${t.green}\1${t.normal}\2'
           # Revert back to the "root" context
           pop: yes
 
         - match: '^(Searching for )(.*)$'
-          replace: '\1${BLUE}\2${NORMAL}'
+          replace: '\1${t.blue}\2${t.normal}'
           # switch to the "dependency" context
           push: dependency
 
@@ -187,16 +191,16 @@ Annotated Example
         # Note that after the above rule, all lines are prepended with
         # additional text. We need to include this in the regex!
         - match: '^ \| (Installing.*)'
-          replace: ' | >>> ${GREEN}\1${NORMAL}'
+          replace: ' | >>> ${t.green}\1${t.normal}'
 
         - match: '^ \| (Running.*)'
-          replace: ' | ${GREEN}\1${NORMAL}'
+          replace: ' | ${t.green}\1${t.normal}'
 
         - match: '^ \| (Best match.*)'
-          replace: ' | ${GREEN}\1${NORMAL}'
+          replace: ' | ${t.green}\1${t.normal}'
 
         - match: '^ \| (WARNING|warning)'
-          replace: ' | ${YELLOW}\1${NORMAL}'
+          replace: ' | ${t.yellow}\1${t.normal}'
 
         - match: '^ \| Installed(.*)'
           replace: ' | Installed\1\n'
