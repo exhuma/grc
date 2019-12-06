@@ -1,16 +1,16 @@
 root:
 
     - match: '^((?:(?:[a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*(?:[A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9]))\b'
-      replace: '${GREEN}\1${NORMAL}'
+      replace: '{t.green}\1{t.normal}'
       continue: yes
 
     - match: '^(\d{1,3}(?:\.\d+){3})'
-      replace: '${GREEN}\1${NORMAL}'
+      replace: '{t.green}\1{t.normal}'
       continue: yes
 
     - match: '"([^"]+)"'
-      replace: '"${RED}\1${NORMAL}"'
+      replace: '"{t.red}\1{t.normal}"'
       continue: yes
 
     - match: '" (\d+) (\d+) "'
-      replace: '" ${BLUE}\1 ${CYAN} \2${NORMAL} "'
+      replace: '" {t.blue}\1 {t.cyan} \2{t.normal} "'

@@ -8,24 +8,23 @@ TODO
     - Allow for pop "before" and "after"
 """
 
-import sys
 import re
-from os.path import basename, exists, join
-from os import fdopen
+import sys
 from optparse import OptionParser
+from os.path import basename, exists, join
 
+import pexpect
 import pkg_resources
+from yaml import SafeLoader, load
 
-from grc.yaml import load
-from grc import pexpect, CONF_LOCATIONS
-from grc.term import TerminalController
+from blessings import Terminal
+from grc import CONF_LOCATIONS
 
 STATE = ['root']
 
-UNBUFFERED = fdopen(sys.stdout.fileno(), 'w', 0)
-
 # Add the installation folder to the config search path
 CONF_LOCATIONS.append(pkg_resources.resource_filename('grc', '../configs'))
+
 
 def parse_options():
     '''
@@ -34,9 +33,10 @@ def parse_options():
     '''
     parser = OptionParser()
     parser.add_option("-c", "--config", dest="config_name",
-            help="Use NAME as config-name. Overrides auto-detection. The file should exist in the folders searched for configs. See :meth:find_conf(name)",
-        metavar="NAME")
+                      help="Use NAME as config-name. Overrides auto-detection. The file should exist in the folders searched for configs. See :meth:find_conf(name)",
+                      metavar="NAME")
     return parser.parse_args()
+
 
 def find_conf(appname):
     """
@@ -57,15 +57,16 @@ def find_conf(appname):
             return confname
 
     sys.stderr.write("No config found named '%s.yml'\n"
-            'Resolution order:\n   %s\n' % (
-                appname,
-                ',\n   '.join(CONF_LOCATIONS)))
+                     'Resolution order:\n   %s\n' % (
+                         appname,
+                         ',\n   '.join(CONF_LOCATIONS)))
     sys.exit(9)
 
-def main():
+
+def run(stream):
     options, args = parse_options()
-    term = TerminalController()
-    cols = term.COLS or 80
+    term = Terminal()
+    cols = term.width or 80
 
     if args:
         config_name = options.config_name or basename(args[0])
@@ -73,11 +74,14 @@ def main():
     else:
         source = sys.stdin
         if not options.config_name:
-            print >>sys.stderr, term.render('${RED}ERROR:${NORMAL} When parsing stdin, you need to specify a config file!')
+            print('${t.red}ERROR:${t.normal} When parsing stdin, you need to '
+                  'specify a config file!'.format(t=term), file=sys.stderr)
             sys.exit(9)
         config_name = options.config_name
 
-    conf = load(open(find_conf(config_name)))
+    with open(find_conf(config_name)) as fptr:
+        conf = load(fptr, Loader=SafeLoader)
+
     while True:
         line = source.readline()
         if not line:
@@ -102,7 +106,13 @@ def main():
                 if not continue_:
                     break
 
-        UNBUFFERED.write(term.render(line))
+        stream.write(line.format(t=term))
+
+
+def main():
+    with open(sys.stdout.fileno(), 'w', buffering=1) as stdout:
+        run(stdout)
+
 
 if __name__ == '__main__':
     main()
