@@ -1,22 +1,17 @@
 Installation
 ============
 
-Thanks to the liberal licensing of all third-party dependencies (pyyaml and
-pexpect) I could re-package them into the grc namespace. This makes ``grc``
-completely standalone. As a result you can safely install it into the system
-(i.e. *without* using ``virtualenv``) without the risk of breaking other
-packages.
+GRC follows standard Python packaging guidelines and can be installed using::
 
-As a consequence, installation is as easy as typing::
+   pip install grc
 
-    sudo pip install grc
 
-or::
+If you do not have administrative permissions on your system you can install it
+as user::
 
-    sudo python setup.py install
+   pip install --user grc
 
-.. note:: ``easy_install`` will probably complain about a SandboxViolation
-          because the installation needs to write to ``/usr/share/grc`` which
-          is outside of the environment supported by ``easy_install``. If
-          possible, use ``pip``. If you are still on an older system, run the
-          setup script manually as outlined above.
+Or, in any case install it into an isolated environment::
+
+   python3 -m venv /path/to/your/installation
+   /path/to/your/installation/bin/pip install grc
