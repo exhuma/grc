@@ -1,3 +1,6 @@
+Generic Coloriser
+=================
+
 .. image:: https://readthedocs.org/projects/grc/badge/?version=latest
    :target: https://grc.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status

@@ -3,12 +3,31 @@ from os.path import exists, join
 
 from setuptools import find_packages, setup
 
+
+def get_version():
+    # type: () -> str
+    '''
+    Retrieves the version information for this package.
+    '''
+    filename = 'grc/version.py'
+
+    with open(filename) as fptr:
+        # pylint: disable=invalid-name, exec-used
+        obj = compile(fptr.read(), filename, 'single')
+        data = {}  # type: ignore
+        exec(obj, data)
+    return data['VERSION']
+
+
 PACKAGE = "grc"
 NAME = "grc"
-DESCRIPTION = "Generic Colorizer"
+with open('README.rst') as fptr:
+    DESCRIPTION = fptr.read()
+with open('docs/README.rst') as fptr:
+    LONG_DESCRIPTION = fptr.read()
 AUTHOR = "Michel Albert"
 AUTHOR_EMAIL = "michel@albert.lu"
-VERSION = __import__(PACKAGE).__version__
+VERSION = get_version()
 
 if os.geteuid() == 0:
     CONF_TARGET = "/usr/share/grc/conf.d"
@@ -24,24 +43,24 @@ setup(
     name=NAME,
     version=VERSION,
     description=DESCRIPTION,
-    long_description=open("docs/README.rst").read(),
+    long_description=LONG_DESCRIPTION,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     license="GPL",
-    install_requires = [
+    install_requires=[
         'blessings',
         'pexpect',
         'pyyaml',
     ],
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'grc=grc.scripts.grc:main'
         ]
     },
     data_files=[
         (CONF_TARGET, [join('configs', _) for _ in
-            os.listdir('configs') if _[-1] != '~'])
-        ],
+                       os.listdir('configs') if _[-1] != '~'])
+    ],
     packages=find_packages(exclude=["tests.*", "tests"]),
     zip_safe=False,
 )
