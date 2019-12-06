@@ -22,10 +22,9 @@ from grc import CONF_LOCATIONS
 
 STATE = ['root']
 
-LINE_BUFFERED = open(sys.stdout.fileno(), 'w', buffering=1)
-
 # Add the installation folder to the config search path
 CONF_LOCATIONS.append(pkg_resources.resource_filename('grc', '../configs'))
+
 
 def parse_options():
     '''
@@ -62,7 +61,8 @@ def find_conf(appname):
                 ',\n   '.join(CONF_LOCATIONS)))
     sys.exit(9)
 
-def main():
+
+def run(stream):
     options, args = parse_options()
     term = Terminal()
     cols = term.width or 80
@@ -105,7 +105,13 @@ def main():
                 if not continue_:
                     break
 
-        LINE_BUFFERED.write(line.format(t=term))
+        stream.write(line.format(t=term))
+
+
+def main():
+    with open(sys.stdout.fileno(), 'w', buffering=1) as stdout:
+        run(stdout)
+
 
 if __name__ == '__main__':
     main()
