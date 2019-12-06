@@ -33,9 +33,10 @@ def parse_options():
     '''
     parser = OptionParser()
     parser.add_option("-c", "--config", dest="config_name",
-            help="Use NAME as config-name. Overrides auto-detection. The file should exist in the folders searched for configs. See :meth:find_conf(name)",
-        metavar="NAME")
+                      help="Use NAME as config-name. Overrides auto-detection. The file should exist in the folders searched for configs. See :meth:find_conf(name)",
+                      metavar="NAME")
     return parser.parse_args()
+
 
 def find_conf(appname):
     """
@@ -56,9 +57,9 @@ def find_conf(appname):
             return confname
 
     sys.stderr.write("No config found named '%s.yml'\n"
-            'Resolution order:\n   %s\n' % (
-                appname,
-                ',\n   '.join(CONF_LOCATIONS)))
+                     'Resolution order:\n   %s\n' % (
+                         appname,
+                         ',\n   '.join(CONF_LOCATIONS)))
     sys.exit(9)
 
 
