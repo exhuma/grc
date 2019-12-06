@@ -14,7 +14,7 @@ The original ``grc``
 Available at http://kassiopeia.juls.savba.sk/~garabik/software/grc.html
 
 While the original ``grc`` is a bit smarter with subprocesses, this rewrite
-focuses on ease of use (including `Installation`_, `Configuration`_ and
+focuses on ease of use (including Installation, `Configuration`_ and
 `source-code access`_).
 
 Installation should also honour the `Linux FHS`_
@@ -30,7 +30,7 @@ with these, you need to work with ANSI escape sequences. ``grc`` aims to
 simplify this by having a more readable `Configuration`_ syntax, and by hiding
 the ANSI escape sequences.
 
-.. include:: INSTALL.rst
+See the installation document for more information.
 
 Usage
 =====

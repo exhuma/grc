@@ -21,8 +21,7 @@ def get_version():
 
 PACKAGE = "grc"
 NAME = "grc"
-with open('README.rst') as fptr:
-    DESCRIPTION = fptr.read()
+DESCRIPTION = "Generic Coloriser"
 with open('docs/README.rst') as fptr:
     LONG_DESCRIPTION = fptr.read()
 AUTHOR = "Michel Albert"
@@ -44,6 +43,7 @@ setup(
     version=VERSION,
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/x-rst',
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     license="GPL",
