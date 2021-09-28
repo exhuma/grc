@@ -5,15 +5,6 @@ from io import StringIO
 import strec.core as core
 
 
-@pytest.fixture
-def fresh_state():
-    try:
-        core.STATE = ["root"]
-        yield
-    finally:
-        core.STATE = ["root"]
-
-
 @pytest.mark.parametrize(
     "args, config_name, cmd",
     [
@@ -28,77 +19,28 @@ def test_parse_args(args, config_name, cmd):
     assert result.cmd == cmd
 
 
-def test_find_config_existing(fresh_state):
+def test_find_config_existing():
     with patch("strec.core.exists") as exists:
         exists.return_value = True
         result = core.find_conf("testapp")
     assert result.endswith("testapp.yml")
 
 
-def test_find_config_missing(fresh_state):
+def test_find_config_missing():
     with patch("strec.core.sys") as sys:
         result = core.find_conf("testapp")
     sys.exit.assert_called_with(9)
 
 
-def test_process_line(fresh_state):
-    conf = core.load_config("ls")
-    line = core.process_line("drwxr-xr-x 3 exhuma exhuma 4096 Oct 14 07:19 tests", conf)
-    expected = (
-        "{t.blue}drwxr-xr-x{t.normal} {t.yellow}3{t.normal} exhuma "
-        "exhuma {t.yellow}4096{t.normal} Oct {t.yellow}14{t.normal} "
-        "{t.yellow}07{t.normal}:{t.yellow}19{t.normal} tests"
-    )
-    assert line == expected
-
-
-def test_stack_push(fresh_state):
-    """
-    Make sure we push onto the stack if a line matches a pushing condition
-    """
-    conf = {
-        "root": [
-            {
-                "match": "(hello-world)",
-                "push": "new-state",
-            },
-        ]
-    }
-    line = core.process_line("hello-world", conf)
-    assert core.STATE == ["root", "new-state"]
-
-
-def test_stack_pop(fresh_state):
-    """
-    Make sure we pop from the stack if a line matches a popping condition
-    """
-    conf = {
-        "another-state": [
-            {
-                "match": "(hello-world)",
-                "pop": True,
-            },
-        ]
-    }
-    core.STATE = ["root", "another-state"]
-    line = core.process_line("hello-world", conf)
-    assert core.STATE == ["root"]
-
-
-def test_process_lines(fresh_state):
+def test_process_lines():
     source = StringIO("hello-world")
     output = StringIO()
-    conf = {
-        "root": [
-            {
-                "match": "(hello-world)",
-                "replace": ">\\1<",
-            },
-        ]
-    }
-    core.process_lines(source, output, conf, None)
+    colorizer = Mock()
+    colorizer.process.return_value = "sentinel"
+    core.process_lines(source, colorizer, output, None)
     result = output.getvalue()
-    assert result == ">hello-world<"
+    assert result == "sentinel"
+    colorizer.process.assert_called_with("hello-world")
 
 
 def test_create_pty():

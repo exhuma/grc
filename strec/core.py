@@ -20,9 +20,9 @@ from blessings import Terminal
 from strec import CONF_LOCATIONS
 from strec.colorizers import Colorizer
 
+
 # Add the installation folder to the config search path
 CONF_LOCATIONS.append(pkg_resources.resource_filename("strec", "../configs"))
-
 
 def parse_args(args):
     """
@@ -67,29 +67,6 @@ def find_conf(appname):
         "Resolution order:\n   %s\n" % (appname, ",\n   ".join(CONF_LOCATIONS))
     )
     sys.exit(9)
-
-
-def process_line(line, conf):
-    for rule in conf[STATE[-1]]:
-        # rule defaults
-        regex = re.compile(rule.get("match", r"^.*$"))
-        replace = rule.get("replace", r"\0")
-        push = rule.get("push", None)
-        pop = rule.get("pop", False)
-        continue_ = rule.get("continue", False)
-
-        # transform the line if necessary
-        match = regex.search(line)
-        if match:
-            line = regex.sub(replace, line)
-            if push:
-                STATE.append(push)
-            if pop and len(STATE) > 1:
-                STATE.pop()
-
-            if not continue_:
-                break
-    return line
 
 
 def load_config(config_name):
@@ -142,8 +119,6 @@ def run(stream, args):
         colorizer = Colorizer.from_config(args.config_name)
         source = create_stdin(args.config_name, term)
         config_name = args.config_name
-
-    conf = load_config(config_name)
 
     process_lines(source, colorizer, stream, term)
 
