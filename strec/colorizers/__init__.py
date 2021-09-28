@@ -2,24 +2,43 @@ import re
 from yaml import SafeLoader, load
 from os.path import exists, join
 
-from grc import CONF_LOCATIONS
+from strec import CONF_LOCATIONS
+
+from abc import ABCMeta, abstractmethod
 
 
-class Colorizer:
+class Colorizer(metaclass=ABCMeta):
+
+    @abstractmethod
+    def process(self, line):
+        raise NotImplementedError('Not yet implemented')
+
+    @staticmethod
+    def from_basename(cmd_basename):
+        # TODO detect garabic-style config
+        return YamlColorizer.from_config(cmd_basename)
 
     @staticmethod
     def from_config(config_name):
-        filename = Colorizer.find_conf(config_name)
+        # TODO detect garabic-style config
+        return YamlColorizer.from_config(config_name)
+
+
+class YamlColorizer(Colorizer):
+
+    @staticmethod
+    def from_config(config_name):
+        filename = YamlColorizer.find_conf(config_name)
         with open(filename) as fptr:
             conf = load(fptr, Loader=SafeLoader)
-        return Colorizer(conf)
+        return YamlColorizer(conf)
 
     @staticmethod
     def from_basename(basename):
-        filename = Colorizer.find_conf(basename)
+        filename = YamlColorizer.find_conf(basename)
         with open(filename) as fptr:
             conf = load(fptr, Loader=SafeLoader)
-        return Colorizer(conf)
+        return YamlColorizer(conf)
 
     @staticmethod
     def find_conf(appname):
@@ -71,3 +90,65 @@ class Colorizer:
                 if not continue_:
                     break
         return line
+
+
+class Garabik(Colorizer):
+
+    @staticmethod
+    def load(filename):
+        lines = []
+        sections = []
+        current_section = {
+            'regexp': '',
+            'colours': [],
+            'count': 'more',
+            'command': '',
+            'skip': False,
+            'replace': False,
+            'concat': '',
+        }
+        allowed_keys = current_section.keys()
+        with open(filename) as fptr:
+            for line_no, line in enumerate(fptr, 1):
+                if line.strip().startswith('#') or not line.strip():
+                    continue
+                if re.match(r'^[-=]+$', line.strip()):
+                    sections.append(current_section)
+                    current_section = {
+                        'regexp': '',
+                        'colours': [],
+                        'count': 'more',
+                        'command': '',
+                        'skip': False,
+                        'replace': False,
+                        'concat': '',
+                    }
+                    continue
+                key, _, value = line.partition('=')
+                key = key.strip()
+                value = value.strip()
+                if key not in allowed_keys:
+                    raise ValueError('Invalid key (%r) found in file %r at '
+                                     'line %d. Valid keys are: %r' % (
+                                         key, filename, line_no, allowed_keys
+                                     ))
+                if key == 'regexp':
+                    current_section[key] = re.compile(value)
+                else:
+                    current_section[key] = value
+        return Garabik(sections)
+
+    @staticmethod
+    def from_config(filename):
+        return Garabik.load(filename)
+
+    def __init__(self, rules):
+        self.state = ['root']
+        self.rules = rules
+
+    def process(self, line):
+        for rule in self.rules:
+            match = re.match(rule['regexp'], line)
+            if match:
+                re.sub
+        return '*' + line
