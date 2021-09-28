@@ -1,0 +1,6 @@
+root:
+    - match: '(^[dprwx-]{10})'
+      replace: '{t.blue}\1{t.normal}'
+      continue: true
+    - match: '(\d+)'
+      replace: '{t.yellow}\1{t.normal}'
