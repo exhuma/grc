@@ -3,7 +3,7 @@ Generic Colorizer
 
 .. note:: Inspired by http://kassiopeia.juls.savba.sk/~garabik/software/grc.html
 
-``grc`` allows you to colorize (even transform) shell output.
+``strec`` allows you to colorize (even transform) shell output.
 
 Alternatives
 ============
@@ -23,12 +23,12 @@ Installation should also honour the `Linux FHS`_
 ------------------
 
 ``sed`` and ``awk`` are extremely powerful tools, and can certainly do what
-``grc`` does. They will certainly perform better on large streams. It's their
+``strec`` does. They will certainly perform better on large streams. It's their
 intended use afterall. *However*, they both use an archaic and arcane syntax
-for their scripts. Additionally, if you would like to colorize your output
-with these, you need to work with ANSI escape sequences. ``grc`` aims to
-simplify this by having a more readable `Configuration`_ syntax, and by hiding
-the ANSI escape sequences.
+for their scripts. Additionally, if you would like to colorize your output with
+these, you need to work with ANSI escape sequences. ``strec`` aims to simplify
+this by having a more readable `Configuration`_ syntax, and by hiding the ANSI
+escape sequences.
 
 See the installation document for more information.
 
@@ -45,21 +45,21 @@ Synopsis
 
 ::
 
-    <some_process> | grc -c <config>
+    <some_process> | strec -c <config>
 
 Example
 ~~~~~~~
 
 ::
 
-    tail -f /var/log/apache2/access.log | grc -c apache_access
+    tail -f /var/log/apache2/access.log | strec -c apache_access
 
 **Advantages**
-    * Only the stream you are sending to ``grc`` is affected.
+    * Only the stream you are sending to ``strec`` is affected.
     * No known side-effects
 
 **Disadvantages**
-    * As ``grc`` only sees a stream, it cannot determine what application is
+    * As ``strec`` only sees a stream, it cannot determine what application is
       emitting the stream. You have to specify the config manually.
 
 Spawn a subprocess, capture it's output
@@ -73,14 +73,14 @@ Synopsis
 
 ::
 
-    grc <some_procss>
+    strec <some_procss>
 
 Example
 ~~~~~~~
 
 ::
 
-    grc aptitude search python
+    strec aptitude search python
 
 **Advantages**
     * Much less to type
@@ -88,21 +88,21 @@ Example
 
 **Disadvantages**
     * Spawning a subprocess and interacting with it's IO is non-trivial on a
-      TTY/PTY. To simplify the code, ``grc`` uses ``pexpect`` to do the IO
+      TTY/PTY. To simplify the code, ``strec`` uses ``pexpect`` to do the IO
       magic.
     * ``stdout`` and ``stderr`` of the subprocess are combined into one
-      stream, which is then emitten on grc's ``stdout``. [1]_
+      stream, which is then emitten on strec's ``stdout``. [1]_
     * The output may not use all of the available terminal width. [1]_
 
 
 Configuration
 =============
 
-``grc`` searches three locations for configuration files in order:
+``strec`` searches three locations for configuration files in order:
 
-* ``~/.grc/conf.d/<confname>.yml``
-* ``/etc/grc/conf.d/<confname>.yml``
-* ``/usr/share/grc/conf.d/<confname>.yml``
+* ``~/.strec/conf.d/<confname>.yml``
+* ``/etc/strec/conf.d/<confname>.yml``
+* ``/usr/share/strec/conf.d/<confname>.yml``
 
 The first matching config file wins. This means, you can override any
 system-wide configs with your own concoctions.
@@ -110,7 +110,7 @@ system-wide configs with your own concoctions.
 Syntax
 ------
 
-``grc`` uses YAML_ as config syntax. Comparing to ``.ini`` and ``json`` files
+``strec`` uses YAML_ as config syntax. Comparing to ``.ini`` and ``json`` files
 (both included in the Python stdlib), this syntax lends itself much better to
 the requirements of this application.
 
@@ -300,7 +300,7 @@ Before                 After
 Footnotes
 =========
 
-.. [1] ``grc`` uses ``pyexpect`` to deal with TTY pecularities. This will
+.. [1] ``strec`` uses ``pyexpect`` to deal with TTY pecularities. This will
        however have two side-effects. First, ``stdout`` will be combined with
        ``stderr``. And second, terminal width may not be well respected.
 
