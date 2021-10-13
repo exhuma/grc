@@ -1,10 +1,10 @@
-.. grc documentation master file, created by
+.. strec documentation master file, created by
    sphinx-quickstart on Sun Dec 11 11:56:06 2011.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to grc's documentation!
-===============================
+Welcome to strec's documentation!
+=================================
 
 .. Contents:
 .. 

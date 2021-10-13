@@ -1,7 +1,7 @@
 # An example YAML config file beautifying the output of ``python setup.py
 # install``
 #
-# Rules are standard python regexes. grc will replace the lines according to
+# Rules are standard python regexes. strec will replace the lines according to
 # matching rules. So you can even re-write entries as seen in this example.
 #
 # The rules are parsed sequentially. The first rule that matches an input line

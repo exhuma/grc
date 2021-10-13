@@ -18,12 +18,12 @@ import pkg_resources
 from yaml import SafeLoader, load
 
 from blessings import Terminal
-from grc import CONF_LOCATIONS
+from strec import CONF_LOCATIONS
 
 STATE = ['root']
 
 # Add the installation folder to the config search path
-CONF_LOCATIONS.append(pkg_resources.resource_filename('grc', '../configs'))
+CONF_LOCATIONS.append(pkg_resources.resource_filename('strec', '../configs'))
 
 def parse_args():
     '''
@@ -54,9 +54,9 @@ def find_conf(appname):
     Searches for a config file name.
 
     Search order:
-        ~/.grc/conf.d/<appname>.yml
-        /etc/grc/conf.d/<appname>.yml
-        /usr/share/grc/conf.d/<appname>.yml
+        ~/.strec/conf.d/<appname>.yml
+        /etc/strec/conf.d/<appname>.yml
+        /usr/share/strec/conf.d/<appname>.yml
 
     TIP:
         If you have one config file that could be used for multiple

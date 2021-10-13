@@ -5,7 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = ../../grc-docs
+BUILDDIR      = ../../strec-docs
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -77,17 +77,17 @@ qthelp:
 	@echo
 	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
 	      ".qhcp project file in $(BUILDDIR)/qthelp, like this:"
-	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/grc.qhcp"
+	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/strec.qhcp"
 	@echo "To view the help file:"
-	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/grc.qhc"
+	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/strec.qhc"
 
 devhelp:
 	$(SPHINXBUILD) -b devhelp $(ALLSPHINXOPTS) $(BUILDDIR)/devhelp
 	@echo
 	@echo "Build finished."
 	@echo "To view the help file:"
-	@echo "# mkdir -p $$HOME/.local/share/devhelp/grc"
-	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/grc"
+	@echo "# mkdir -p $$HOME/.local/share/devhelp/strec"
+	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/strec"
 	@echo "# devhelp"
 
 epub:

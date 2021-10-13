@@ -9,7 +9,7 @@ def get_version():
     '''
     Retrieves the version information for this package.
     '''
-    filename = 'grc/version.py'
+    filename = 'strec/version.py'
 
     with open(filename) as fptr:
         # pylint: disable=invalid-name, exec-used
@@ -19,8 +19,8 @@ def get_version():
     return data['VERSION']
 
 
-PACKAGE = "grc"
-NAME = "grc"
+PACKAGE = "strec"
+NAME = "strec"
 DESCRIPTION = "Generic Coloriser"
 with open('docs/README.rst') as fptr:
     LONG_DESCRIPTION = fptr.read()
@@ -29,10 +29,10 @@ AUTHOR_EMAIL = "michel@albert.lu"
 VERSION = get_version()
 
 if os.geteuid() == 0:
-    CONF_TARGET = "/usr/share/grc/conf.d"
+    CONF_TARGET = "/usr/share/strec/conf.d"
 else:
     from os.path import join, expanduser
-    CONF_TARGET = join(expanduser('~'), '.grc', 'conf.d')
+    CONF_TARGET = join(expanduser('~'), '.strec', 'conf.d')
 
 if not exists(CONF_TARGET):
     os.makedirs(CONF_TARGET)
@@ -55,7 +55,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'grc=grc.core:main'
+            'strec=strec.core:main'
         ]
     },
     data_files=[
