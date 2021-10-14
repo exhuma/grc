@@ -20,28 +20,29 @@ from yaml import SafeLoader, load
 from blessings import Terminal
 from strec import CONF_LOCATIONS
 
-STATE = ['root']
+STATE = ["root"]
 
 # Add the installation folder to the config search path
-CONF_LOCATIONS.append(pkg_resources.resource_filename('strec', '../configs'))
+CONF_LOCATIONS.append(pkg_resources.resource_filename("strec", "../configs"))
+
 
 def parse_args(args):
-    '''
+    """
     Returns a tuple of command-line options and remaining arguments (see
     optparse)
-    '''
+    """
     parser = ArgumentParser()
     parser.add_argument(
         "-c",
         "--config",
         dest="config_name",
-        help=("Use NAME as config-name. Overrides auto-detection. The file "
-              "should exist in the folders searched for configs."),
-        metavar="NAME")
-    parser.add_argument(
-        "cmd",
-        help="The command to run and colorize.",
-        nargs="*")
+        help=(
+            "Use NAME as config-name. Overrides auto-detection. The file "
+            "should exist in the folders searched for configs."
+        ),
+        metavar="NAME",
+    )
+    parser.add_argument("cmd", help="The command to run and colorize.", nargs="*")
     return parser.parse_args(args)
 
 
@@ -63,21 +64,21 @@ def find_conf(appname):
         if exists(confname):
             return confname
 
-    sys.stderr.write("No config found named '%s.yml'\n"
-                     'Resolution order:\n   %s\n' % (
-                         appname,
-                         ',\n   '.join(CONF_LOCATIONS)))
+    sys.stderr.write(
+        "No config found named '%s.yml'\n"
+        "Resolution order:\n   %s\n" % (appname, ",\n   ".join(CONF_LOCATIONS))
+    )
     sys.exit(9)
 
 
 def process_line(line, conf):
     for rule in conf[STATE[-1]]:
         # rule defaults
-        regex = re.compile(rule.get('match', r'^.*$'))
-        replace = rule.get('replace', r'\0')
-        push = rule.get('push', None)
-        pop = rule.get('pop', False)
-        continue_ = rule.get('continue', False)
+        regex = re.compile(rule.get("match", r"^.*$"))
+        replace = rule.get("replace", r"\0")
+        push = rule.get("push", None)
+        pop = rule.get("pop", False)
+        continue_ = rule.get("continue", False)
 
         # transform the line if necessary
         match = regex.search(line)
@@ -113,16 +114,18 @@ def process_lines(source, stream, conf, term):
 
 def create_pty(cmd, args):
     cmd = basename(cmd)
-    source = pexpect.spawn(" ".join([cmd] + args),
-                            maxread=1,
-                            encoding='utf8')
+    source = pexpect.spawn(" ".join([cmd] + args), maxread=1, encoding="utf8")
     return source
+
 
 def create_stdin(config_name, term):
     source = sys.stdin
     if not config_name:
-        print('${t.red}ERROR:${t.normal} When parsing stdin, you need to '
-                'specify a config file!'.format(t=term), file=sys.stderr)
+        print(
+            "${t.red}ERROR:${t.normal} When parsing stdin, you need to "
+            "specify a config file!".format(t=term),
+            file=sys.stderr,
+        )
         sys.exit(9)
     return source
 
@@ -146,9 +149,9 @@ def run(stream, args):
 
 
 def main():  # pragma: no cover
-    with open(sys.stdout.fileno(), 'w', buffering=1) as stdout:
+    with open(sys.stdout.fileno(), "w", buffering=1) as stdout:
         run(stdout, None)
 
 
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     main()
