@@ -52,6 +52,12 @@ setup(
         'pexpect',
         'pyyaml',
     ],
+    extras_require={
+        "test": [
+            "pytest",
+            "pytest-cov",
+        ]
+    },
     entry_points={
         'console_scripts': [
             'strec=strec.core:main'

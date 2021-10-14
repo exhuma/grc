@@ -25,7 +25,7 @@ STATE = ['root']
 # Add the installation folder to the config search path
 CONF_LOCATIONS.append(pkg_resources.resource_filename('strec', '../configs'))
 
-def parse_args():
+def parse_args(args):
     '''
     Returns a tuple of command-line options and remaining arguments (see
     optparse)
@@ -41,12 +41,8 @@ def parse_args():
     parser.add_argument(
         "cmd",
         help="The command to run and colorize.",
-        nargs=1)
-    parser.add_argument(
-        "cmdargs",
-        help="Arguments passed onto the subcommand.",
-        nargs='*')
-    return parser.parse_args()
+        nargs="*")
+    return parser.parse_args(args)
 
 
 def find_conf(appname):
@@ -74,58 +70,85 @@ def find_conf(appname):
     sys.exit(9)
 
 
-def run(stream):
-    args = parse_args()
-    term = Terminal()
+def process_line(line, conf):
+    for rule in conf[STATE[-1]]:
+        # rule defaults
+        regex = re.compile(rule.get('match', r'^.*$'))
+        replace = rule.get('replace', r'\0')
+        push = rule.get('push', None)
+        pop = rule.get('pop', False)
+        continue_ = rule.get('continue', False)
 
-    if args:
-        cmd = basename(args.cmd[0])
-        config_name = args.config_name or cmd
-        source = pexpect.spawn(" ".join([cmd] + args.cmdargs),
-                               maxread=1,
-                               encoding='utf8')
-    else:
-        source = sys.stdin
-        if not args.config_name:
-            print('${t.red}ERROR:${t.normal} When parsing stdin, you need to '
-                  'specify a config file!'.format(t=term), file=sys.stderr)
-            sys.exit(9)
-        config_name = args.config_name
+        # transform the line if necessary
+        match = regex.search(line)
+        if match:
+            line = regex.sub(replace, line)
+            if push:
+                STATE.append(push)
+            if pop and len(STATE) > 1:
+                STATE.pop()
 
+            if not continue_:
+                break
+    return line
+
+
+def load_config(config_name):
     with open(find_conf(config_name)) as fptr:
         conf = load(fptr, Loader=SafeLoader)
+    return conf
 
+
+def process_lines(source, stream, conf, term):
+    """
+    Read lines from *source* and process them until an empty-line is read.
+    """
     while True:
         line = source.readline()
         if not line:
             break
-        for rule in conf[STATE[-1]]:
-            # rule defaults
-            regex = re.compile(rule.get('match', r'^.*$'))
-            replace = rule.get('replace', r'\0')
-            push = rule.get('push', None)
-            pop = rule.get('pop', False)
-            continue_ = rule.get('continue', False)
-
-            # transform the line if necessary
-            match = regex.search(line)
-            if match:
-                line = regex.sub(replace, line)
-                if push:
-                    STATE.append(push)
-                if pop and len(STATE) > 1:
-                    STATE.pop()
-
-                if not continue_:
-                    break
-
+        line = process_line(line, conf)
         stream.write(line.format(t=term))
 
 
-def main():
+def create_pty(cmd, args):
+    cmd = basename(cmd)
+    source = pexpect.spawn(" ".join([cmd] + args),
+                            maxread=1,
+                            encoding='utf8')
+    return source
+
+def create_stdin(config_name, term):
+    source = sys.stdin
+    if not config_name:
+        print('${t.red}ERROR:${t.normal} When parsing stdin, you need to '
+                'specify a config file!'.format(t=term), file=sys.stderr)
+        sys.exit(9)
+    return source
+
+
+def run(stream, args):
+    args = parse_args(args)
+    term = Terminal()
+
+    if args.cmd:
+        cmd = basename(args.cmd[0])
+        config_name = args.config_name or cmd
+        cmdargs = args.cmd[1:]
+        source = create_pty(cmd, cmdargs)
+    else:
+        source = create_stdin(args.config_name, term)
+        config_name = args.config_name
+
+    conf = load_config(config_name)
+
+    process_lines(source, stream, conf, term)
+
+
+def main():  # pragma: no cover
     with open(sys.stdout.fileno(), 'w', buffering=1) as stdout:
-        run(stdout)
+        run(stdout, None)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()
