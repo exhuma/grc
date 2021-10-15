@@ -51,6 +51,7 @@ setup(
         'blessings',
         'pexpect',
         'pyyaml',
+        'strec',
     ],
     entry_points={
         'console_scripts': [
