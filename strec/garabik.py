@@ -9,14 +9,6 @@ class Rule:
     colors: List[str]
 
 
-def rule_2_sub(rule: Rule, color: Any) -> str:
-    p = re.compile(rule.regex)
-
-    items = [
-        f"{color.get(rule.colors[n-1])}\\{n}{color.get('reset')}"
-        for n in range(1, p.groups + 1)
-    ]
-    return items
 
 
 def make_matcher(rule: Rule, colors):
