@@ -1,5 +1,9 @@
+"""
+This module defines a parser for config files from
+https://github.com/garabik/grc
+"""
 from dataclasses import dataclass
-from typing import Any, Callable, List, TextIO
+from typing import Callable, List, Protocol, TextIO
 import re
 
 
@@ -36,14 +40,30 @@ class ANSI:
 
 @dataclass
 class Rule:
+    """
+    A coloring rule from ``garabik/grc``
+    """
+
     regex: str
     colors: List[str]
 
 
+def make_matcher(rule: Rule, colors: ColorMap) -> Callable[[re.Match[str]], str]:
+    """
+    Create a function that converts a :py:class:`re.Match` object into a
+    colorised string.
 
+    This function can be used by :py:func:`re.sub`
 
-def make_matcher(rule: Rule, colors):
-    def replace_match(match: re.Match):
+    :param rule: The rule defining the colors used for replacement.
+    :param colors: The definition of the special control-characters for the
+        colors to use.
+    """
+
+    def replace_match(match: re.Match[str]) -> str:
+        """
+        Create a colorised string from a :py:class:`re.Match` object.
+        """
         full_text = match.group(0)
         offset = match.start(0)
         output = full_text[: match.start(1) - offset]
@@ -62,7 +82,12 @@ def make_matcher(rule: Rule, colors):
 
 
 class Parser:
-    def __init__(self, rules: List[Rule], output: TextIO, colors: Any) -> None:
+    """
+    The main implementation to process input lines and convert them to text
+    with the appropriate control-characters.
+    """
+
+    def __init__(self, rules: List[Rule], output: TextIO, colors: ColorMap) -> None:
         self.rules = rules
         self.output = output
         self.colors = colors
