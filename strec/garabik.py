@@ -48,7 +48,9 @@ class Rule:
     colors: List[str]
 
 
-def make_matcher(rule: Rule, colors: ColorMap) -> Callable[[re.Match[str]], str]:
+def make_matcher(
+    rule: Rule, colors: ColorMap
+) -> Callable[[re.Match[str]], str]:
     """
     Create a function that converts a :py:class:`re.Match` object into a
     colorised string.
@@ -71,9 +73,7 @@ def make_matcher(rule: Rule, colors: ColorMap) -> Callable[[re.Match[str]], str]
             end_position = None
             if i < len(match.groups()):
                 end_position = match.start(i + 1) - offset
-            replacement = (
-                f"{colors.get(rule.colors[i - 1])}{match.group(i)}{colors.get('reset')}"
-            )
+            replacement = f"{colors.get(rule.colors[i - 1])}{match.group(i)}{colors.get('reset')}"
             output += replacement
             output += full_text[match.end(i) - offset : end_position]
         return output
@@ -87,7 +87,9 @@ class Parser:
     with the appropriate control-characters.
     """
 
-    def __init__(self, rules: List[Rule], output: TextIO, colors: ColorMap) -> None:
+    def __init__(
+        self, rules: List[Rule], output: TextIO, colors: ColorMap
+    ) -> None:
         self.rules = rules
         self.output = output
         self.colors = colors
