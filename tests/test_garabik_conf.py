@@ -46,10 +46,3 @@ def test_color_list2():
     parser.feed(input_data)
     result = output.getvalue()
     assert result == expected
-
-
-def test_rule_to_sub():
-    rule = garabik.Rule(r"(\w+) something (\d+)", ["yellow", "blue"])
-    expected = [r"<yellow>\1<reset>", r"<blue>\2<reset>"]
-    result = garabik.rule_2_sub(rule, Colors)
-    assert result == expected
