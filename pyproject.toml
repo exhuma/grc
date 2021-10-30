@@ -1,0 +1,13 @@
+[tool.black]
+line_length = 80
+
+[tool.isort]
+profile = "black"
+line_length = 80
+virtual_env = "env"
+
+[tool.pylint."messages control"]
+disable = ["C0330", "C0326"]
+
+[tool.pylint.format]
+max-line-length = "80"
