@@ -2,9 +2,9 @@
 This module defines a parser for config files from
 https://github.com/garabik/grc
 """
+import re
 from dataclasses import dataclass
 from typing import Callable, List, Protocol, TextIO
-import re
 
 
 class ColorMap(Protocol):
