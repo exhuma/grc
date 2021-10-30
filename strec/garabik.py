@@ -49,7 +49,7 @@ class Rule:
 
 
 def make_matcher(
-    rule: Rule, colors: ColorMap
+    colors: List[str], color_map: ColorMap
 ) -> Callable[[re.Match[str]], str]:
     """
     Create a function that converts a :py:class:`re.Match` object into a
@@ -57,8 +57,8 @@ def make_matcher(
 
     This function can be used by :py:func:`re.sub`
 
-    :param rule: The rule defining the colors used for replacement.
-    :param colors: The definition of the special control-characters for the
+    :param colors: The colors used for replacement.
+    :param color_map: The definition of the special control-characters for the
         colors to use.
     """
 
@@ -73,7 +73,7 @@ def make_matcher(
             end_position = None
             if i < len(match.groups()):
                 end_position = match.start(i + 1) - offset
-            replacement = f"{colors.get(rule.colors[i - 1])}{match.group(i)}{colors.get('reset')}"
+            replacement = f"{color_map.get(colors[i - 1])}{match.group(i)}{color_map.get('reset')}"
             output += replacement
             output += full_text[match.end(i) - offset : end_position]
         return output
@@ -96,5 +96,7 @@ class Parser:
 
     def feed(self, line: str) -> None:
         for rule in self.rules:
-            output = re.sub(rule.regex, make_matcher(rule, self.colors), line)
+            output = re.sub(
+                rule.regex, make_matcher(rule.colors, self.colors), line
+            )
             self.output.write(output)
