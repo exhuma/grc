@@ -3,6 +3,37 @@ from typing import Any, Callable, List, TextIO
 import re
 
 
+class ColorMap(Protocol):
+    """
+    The protocol used to map named colors to terminal control-characters
+    """
+
+    @staticmethod
+    def get(name: str) -> str:
+        ...
+
+
+class ANSI:
+    """
+    A simple implementation for ANSI color codes.
+    """
+
+    @staticmethod
+    def get(name: str) -> str:
+        data = {
+            "black": "\x1b[30m",
+            "red": "\x1b[31m",
+            "green": "\x1b[32m",
+            "yellow": "\x1b[33m",
+            "blue": "\x1b[34m",
+            "magenta": "\x1b[35m",
+            "cyan": "\x1b[36m",
+            "white": "\x1b[37m",
+            "reset": "\x1b[0m",
+        }
+        return data.get(name, "")
+
+
 @dataclass
 class Rule:
     regex: str
