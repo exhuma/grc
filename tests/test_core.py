@@ -1,7 +1,8 @@
-from unittest.mock import patch, Mock
+from io import StringIO
+from unittest.mock import Mock, patch
 
 import pytest
-from io import StringIO
+
 import strec.core as core
 
 

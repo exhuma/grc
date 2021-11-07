@@ -2,9 +2,9 @@
 This module defines a parser for config files from
 https://github.com/garabik/grc
 """
-from enum import Enum
 import re
 from dataclasses import dataclass
+from enum import Enum
 from typing import Callable, List, Protocol, TextIO
 
 UNCHANGED = "unchanged"

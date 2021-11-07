@@ -1,17 +1,16 @@
 import re
-from yaml import SafeLoader, load
+from abc import ABCMeta, abstractmethod
 from os.path import exists, join
+
+from yaml import SafeLoader, load
 
 from strec import CONF_LOCATIONS
 
-from abc import ABCMeta, abstractmethod
-
 
 class Colorizer(metaclass=ABCMeta):
-
     @abstractmethod
     def process(self, line):
-        raise NotImplementedError('Not yet implemented')
+        raise NotImplementedError("Not yet implemented")
 
     @staticmethod
     def from_basename(cmd_basename):
@@ -25,7 +24,6 @@ class Colorizer(metaclass=ABCMeta):
 
 
 class YamlColorizer(Colorizer):
-
     @staticmethod
     def from_config(config_name):
         filename = YamlColorizer.find_conf(config_name)
@@ -59,24 +57,25 @@ class YamlColorizer(Colorizer):
             if exists(confname):
                 return confname
 
-        raise FileNotFoundError("No config found named '%s.yml'\n"
-                                'Resolution order:\n   %s\n' % (
-                                    appname,
-                                    ',\n   '.join(CONF_LOCATIONS)))
+        raise FileNotFoundError(
+            "No config found named '%s.yml'\n"
+            "Resolution order:\n   %s\n"
+            % (appname, ",\n   ".join(CONF_LOCATIONS))
+        )
 
     def __init__(self, conf):
-        self.state = ['root']
+        self.state = ["root"]
         self.conf = conf
 
     def process(self, line):
 
         for rule in self.conf[self.state[-1]]:
             # rule defaults
-            regex = re.compile(rule.get('match', r'^.*$'))
-            replace = rule.get('replace', r'\0')
-            push = rule.get('push', None)
-            pop = rule.get('pop', False)
-            continue_ = rule.get('continue', False)
+            regex = re.compile(rule.get("match", r"^.*$"))
+            replace = rule.get("replace", r"\0")
+            push = rule.get("push", None)
+            pop = rule.get("pop", False)
+            continue_ = rule.get("continue", False)
 
             # transform the line if necessary
             match = regex.search(line)
@@ -93,46 +92,46 @@ class YamlColorizer(Colorizer):
 
 
 class Garabik(Colorizer):
-
     @staticmethod
     def load(filename):
         lines = []
         sections = []
         current_section = {
-            'regexp': '',
-            'colours': [],
-            'count': 'more',
-            'command': '',
-            'skip': False,
-            'replace': False,
-            'concat': '',
+            "regexp": "",
+            "colours": [],
+            "count": "more",
+            "command": "",
+            "skip": False,
+            "replace": False,
+            "concat": "",
         }
         allowed_keys = current_section.keys()
         with open(filename) as fptr:
             for line_no, line in enumerate(fptr, 1):
-                if line.strip().startswith('#') or not line.strip():
+                if line.strip().startswith("#") or not line.strip():
                     continue
-                if re.match(r'^[-=]+$', line.strip()):
+                if re.match(r"^[-=]+$", line.strip()):
                     sections.append(current_section)
                     current_section = {
-                        'regexp': '',
-                        'colours': [],
-                        'count': 'more',
-                        'command': '',
-                        'skip': False,
-                        'replace': False,
-                        'concat': '',
+                        "regexp": "",
+                        "colours": [],
+                        "count": "more",
+                        "command": "",
+                        "skip": False,
+                        "replace": False,
+                        "concat": "",
                     }
                     continue
-                key, _, value = line.partition('=')
+                key, _, value = line.partition("=")
                 key = key.strip()
                 value = value.strip()
                 if key not in allowed_keys:
-                    raise ValueError('Invalid key (%r) found in file %r at '
-                                     'line %d. Valid keys are: %r' % (
-                                         key, filename, line_no, allowed_keys
-                                     ))
-                if key == 'regexp':
+                    raise ValueError(
+                        "Invalid key (%r) found in file %r at "
+                        "line %d. Valid keys are: %r"
+                        % (key, filename, line_no, allowed_keys)
+                    )
+                if key == "regexp":
                     current_section[key] = re.compile(value)
                 else:
                     current_section[key] = value
@@ -143,12 +142,12 @@ class Garabik(Colorizer):
         return Garabik.load(filename)
 
     def __init__(self, rules):
-        self.state = ['root']
+        self.state = ["root"]
         self.rules = rules
 
     def process(self, line):
         for rule in self.rules:
-            match = re.match(rule['regexp'], line)
+            match = re.match(rule["regexp"], line)
             if match:
                 re.sub
-        return '*' + line
+        return "*" + line
