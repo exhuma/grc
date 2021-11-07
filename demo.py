@@ -14,6 +14,16 @@ parser = g.Parser(
             ["blue", "unchanged", "yellow"],
             g.Count.MORE,
         ),
+        g.Rule(
+            r"(block begin)",
+            ["yellow"],
+            g.Count.BLOCK,
+        ),
+        g.Rule(
+            r"(block end)",
+            ["default"],
+            g.Count.UNBLOCK,
+        ),
     ],
     sys.stdout,
     g.ANSI,
