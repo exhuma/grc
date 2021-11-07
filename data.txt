@@ -1,3 +1,8 @@
 123-ofi-345
 woifjewofij
 222-aaa-444
+block begin
+hello world
+another line
+block end
+333-aaa-444

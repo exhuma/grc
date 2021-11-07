@@ -24,6 +24,8 @@ class Count(Enum):
     MORE = "more"
     STOP = "stop"
     ONCE = "once"
+    BLOCK = "block"
+    UNBLOCK = "unblock"
 
 
 class ANSI:
@@ -53,6 +55,7 @@ class Rule:
     A coloring rule from ``garabik/grc``
     """
 
+    # TODO: Might make sense to use a compiled pattern
     regex: str
     colors: List[str]
     count: Count
@@ -106,9 +109,21 @@ class Parser:
         self.rules = rules
         self.output = output
         self.colors = colors
+        self.block_color = ""
 
     def feed(self, line: str) -> None:
         output = line
+
+        if self.block_color != "":
+            for rule in self.rules:
+                if re.search(rule.regex, line) and rule.count == Count.UNBLOCK:
+                    self.block_color = ""
+
+        if self.block_color != "":
+            output = f"{self.colors.get(self.block_color)}{line}{self.colors.get('reset')}"
+            self.output.write(output)
+            return
+
         for rule in self.rules:
             count = 1 if rule.count == Count.ONCE else 0
             output = re.sub(
@@ -119,4 +134,6 @@ class Parser:
             )
             if rule.count == Count.STOP:
                 break
+            elif re.search(rule.regex, line) and rule.count == Count.BLOCK:
+                self.block_color = rule.colors[0]
         self.output.write(output)

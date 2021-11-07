@@ -1,6 +1,7 @@
 import strec.garabik as garabik
 import pytest
 from io import StringIO
+from textwrap import dedent
 
 
 class Colors:
@@ -11,6 +12,7 @@ class Colors:
             "red": "<red>",
             "yellow": "<yellow>",
             "reset": "<reset>",
+            "default": "<reset>",
         }
         return data[name]
 
@@ -114,5 +116,45 @@ def test_count_once():
 
     parser = garabik.Parser(rules, output, Colors)
     parser.feed(input_data)
+    result = output.getvalue()
+    assert result == expected
+
+
+def test_count_block():
+    input_data = dedent(
+        """\
+        first line
+        second line
+        third line
+        fourth line
+        fifth line
+        """
+    )
+    expected = dedent(
+        """\
+        first line
+        <blue>second line<reset>
+        <blue>third line
+        <reset><reset>fourth line<reset>
+        fifth line
+        """
+    )
+    output = StringIO()
+    rules = [
+        garabik.Rule(
+            r"\b(second line)\b",
+            ["blue"],
+            count=garabik.Count.BLOCK,
+        ),
+        garabik.Rule(
+            r"\b(fourth line)\b",
+            ["default"],
+            count=garabik.Count.UNBLOCK,
+        ),
+    ]
+
+    parser = garabik.Parser(rules, output, Colors)
+    for line in input_data.splitlines(keepends=True):
+        parser.feed(line)
     result = output.getvalue()
     assert result == expected
