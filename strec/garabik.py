@@ -2,6 +2,7 @@
 This module defines a parser for config files from
 https://github.com/garabik/grc
 """
+from enum import Enum
 import re
 from dataclasses import dataclass
 from typing import Callable, List, Protocol, TextIO
@@ -17,6 +18,11 @@ class ColorMap(Protocol):
     @staticmethod
     def get(name: str) -> str:
         ...
+
+
+class Count(Enum):
+    MORE = "more"
+    STOP = "stop"
 
 
 class ANSI:
@@ -48,6 +54,7 @@ class Rule:
 
     regex: str
     colors: List[str]
+    count: Count
 
 
 def make_matcher(
@@ -100,8 +107,11 @@ class Parser:
         self.colors = colors
 
     def feed(self, line: str) -> None:
+        output = line
         for rule in self.rules:
             output = re.sub(
-                rule.regex, make_matcher(rule.colors, self.colors), line
+                rule.regex, make_matcher(rule.colors, self.colors), output
             )
-            self.output.write(output)
+            if rule.count == Count.STOP:
+                break
+        self.output.write(output)
