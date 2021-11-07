@@ -6,6 +6,8 @@ import re
 from dataclasses import dataclass
 from typing import Callable, List, Protocol, TextIO
 
+UNCHANGED = "unchanged"
+
 
 class ColorMap(Protocol):
     """
@@ -73,7 +75,10 @@ def make_matcher(
             end_position = None
             if i < len(match.groups()):
                 end_position = match.start(i + 1) - offset
-            replacement = f"{color_map.get(colors[i - 1])}{match.group(i)}{color_map.get('reset')}"
+            if colors[i - 1] == UNCHANGED:
+                replacement = match.group(i)
+            else:
+                replacement = f"{color_map.get(colors[i - 1])}{match.group(i)}{color_map.get('reset')}"
             output += replacement
             output += full_text[match.end(i) - offset : end_position]
         return output
