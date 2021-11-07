@@ -20,7 +20,11 @@ def test_color_list():
     expected = "this is a <blue>hello<reset> something <red>world<reset> string"
     output = StringIO()
     rules = [
-        garabik.Rule(r"\b(hello) something (world)\b", ["blue", "red"]),
+        garabik.Rule(
+            r"\b(hello) something (world)\b",
+            ["blue", "red"],
+            count=garabik.Count.MORE,
+        ),
     ]
 
     parser = garabik.Parser(rules, output, Colors)
@@ -39,7 +43,55 @@ def test_color_list2():
     expected = "this is a <blue>hello<reset> something <red>world<reset> string"
     output = StringIO()
     rules = [
-        garabik.Rule(r"beginning \b(hello) something (world)\b", ["blue", "red"]),
+        garabik.Rule(
+            r"beginning \b(hello) something (world)\b", ["blue", "red"]
+        ),
+    ]
+
+    parser = garabik.Parser(rules, output, Colors)
+    parser.feed(input_data)
+    result = output.getvalue()
+    assert result == expected
+
+
+def test_count_more():
+    input_data = "this is a hello something world string"
+    expected = "this is a <blue>hello<reset> something <red>world<reset> string"
+    output = StringIO()
+    rules = [
+        garabik.Rule(
+            r"\b(hello)\b",
+            ["blue"],
+            count=garabik.Count.MORE,
+        ),
+        garabik.Rule(
+            r"\b(world)\b",
+            ["red"],
+            count=garabik.Count.MORE,
+        ),
+    ]
+
+    parser = garabik.Parser(rules, output, Colors)
+    parser.feed(input_data)
+    result = output.getvalue()
+    assert result == expected
+
+
+def test_count_no_more():
+    input_data = "this is a hello something world string"
+    expected = "this is a <blue>hello<reset> something world string"
+    output = StringIO()
+    rules = [
+        garabik.Rule(
+            r"\b(hello)\b",
+            ["blue"],
+            count=garabik.Count.STOP,
+        ),
+        garabik.Rule(
+            r"\b(world)\b",
+            ["red"],
+            count=garabik.Count.STOP,
+        ),
     ]
 
     parser = garabik.Parser(rules, output, Colors)
