@@ -195,3 +195,44 @@ def test_skip():
         parser.feed(line)
     result = output.getvalue()
     assert result == expected
+
+
+def test_replace():
+    input_data = dedent(
+        """\
+        first line
+        second line
+        third line
+        fourth line
+        fifth line
+        """
+    )
+    expected = dedent(
+        """\
+        <blue><yellow>hello<reset> first <blue>world<reset> line
+        <reset><blue><yellow>hello<reset> second <blue>world<reset> line
+        <reset><blue><yellow>hello<reset> third <blue>world<reset> line
+        <reset><blue><yellow>hello<reset> fourth <blue>world<reset> line
+        <reset><blue><yellow>hello<reset> fifth <blue>world<reset> line
+        <reset>"""
+    )
+    output = StringIO()
+    rules = [
+        garabik.Rule(
+            r"\b(\w+) line\b",
+            ["blue"],
+            count=garabik.Count.MORE,
+            replace=r"hello \1 world line",
+        ),
+        garabik.Rule(
+            r"\b(hello)\b",
+            ["yellow"],
+            count=garabik.Count.MORE,
+        ),
+    ]
+
+    parser = garabik.Parser(rules, output, Colors)
+    for line in input_data.splitlines(keepends=True):
+        parser.feed(line)
+    result = output.getvalue()
+    assert result == expected

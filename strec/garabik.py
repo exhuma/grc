@@ -60,6 +60,7 @@ class Rule:
     colors: List[str]
     count: Count
     skip: bool = False
+    replace: str = ""
 
     def matches(self, line: str) -> bool:
         """
@@ -137,14 +138,20 @@ class Parser:
 
         for rule in self.rules:
             count = 1 if rule.count == Count.ONCE else 0
+
+            if rule.replace and rule.matches(output):
+                output = re.sub(rule.regex, rule.replace, output)
+                output = f"{self.colors.get(rule.colors[0])}{output}{self.colors.get('reset')}"
+
             output = re.sub(
                 rule.regex,
                 make_matcher(rule.colors, self.colors),
                 output,
                 count=count,
             )
+
             if rule.count == Count.STOP:
                 break
-            elif rule.matches(line) and rule.count == Count.BLOCK:
+            elif rule.matches(output) and rule.count == Count.BLOCK:
                 self.block_color = rule.colors[0]
         self.output.write(output)
