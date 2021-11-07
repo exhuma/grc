@@ -1,10 +1,10 @@
 """
 Tests for the "strec"-style YAML based coloriser
 """
+import pytest
+
 import strec.core as core
 from strec.colorizers import YamlColorizer
-
-import pytest
 
 
 @pytest.fixture

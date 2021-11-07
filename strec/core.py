@@ -15,14 +15,14 @@ from os.path import basename, exists, join
 
 import pexpect
 import pkg_resources
-
 from blessings import Terminal
+
 from strec import CONF_LOCATIONS
 from strec.colorizers import Colorizer
 
-
 # Add the installation folder to the config search path
 CONF_LOCATIONS.append(pkg_resources.resource_filename("strec", "../configs"))
+
 
 def parse_args(args):
     """
@@ -40,7 +40,9 @@ def parse_args(args):
         ),
         metavar="NAME",
     )
-    parser.add_argument("cmd", help="The command to run and colorize.", nargs="*")
+    parser.add_argument(
+        "cmd", help="The command to run and colorize.", nargs="*"
+    )
     return parser.parse_args(args)
 
 

@@ -1,7 +1,9 @@
-import strec.garabik as garabik
-import pytest
 from io import StringIO
 from textwrap import dedent
+
+import pytest
+
+import strec.garabik as garabik
 
 
 class Colors:

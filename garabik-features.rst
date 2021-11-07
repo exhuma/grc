@@ -23,13 +23,13 @@ Analysis/Review
       Uses the same colour definition as the previous line. The documentation is
       unclear what "previous line" means. Is it the previous matched line? Or
       the previous line from the input?
-      
+
 
     ``unchanged``
       Used in many configs (example: "conf.id")
       "grc" expects a colour for each "group" in the regex match.
       "unchanged" is a placeholder for groups that don't need to be colourised.
-      
+
     ``douple-quoted-string`` (Used only in conf.sql)
     Is injected literally at the beginning of the matched string. The docs say
     that it's eval'ed which I have not confirmed yet. It can f.ex. be used to
@@ -37,11 +37,11 @@ Analysis/Review
 * key: command (unused)
 
   value: any console command
-  
+
 * key: concat (unused)
 
   value: a filename
-  
+
 * key: skip (used very rarely, example conf.ss)
 
   values:
@@ -56,14 +56,14 @@ Analysis/Review
   any string with regex backrefs
     Replaces the current line with the template (using backrefs). All
     subsequent regexes will match against the replaced text
-    
+
 * key: count
 
   values:
 
   ``once`` (used sporadically, example=gcc)
     documentation is vague. It states:
-    
+
       ... if the regexp is matched, its first occurrence is coloured and the
       program will continue with other regexp's.
 
