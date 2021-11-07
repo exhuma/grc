@@ -60,6 +60,12 @@ class Rule:
     colors: List[str]
     count: Count
 
+    def matches(self, line: str) -> bool:
+        """
+        Returns True if the line matches this rule.
+        """
+        return bool(re.search(self.regex, line))
+
 
 def make_matcher(
     colors: List[str], color_map: ColorMap
@@ -116,7 +122,7 @@ class Parser:
 
         if self.block_color != "":
             for rule in self.rules:
-                if re.search(rule.regex, line) and rule.count == Count.UNBLOCK:
+                if rule.matches(line) and rule.count == Count.UNBLOCK:
                     self.block_color = ""
 
         if self.block_color != "":
@@ -134,6 +140,6 @@ class Parser:
             )
             if rule.count == Count.STOP:
                 break
-            elif re.search(rule.regex, line) and rule.count == Count.BLOCK:
+            elif rule.matches(line) and rule.count == Count.BLOCK:
                 self.block_color = rule.colors[0]
         self.output.write(output)
