@@ -59,6 +59,7 @@ class Rule:
     regex: str
     colors: List[str]
     count: Count
+    skip: bool = False
 
     def matches(self, line: str) -> bool:
         """
@@ -119,6 +120,10 @@ class Parser:
 
     def feed(self, line: str) -> None:
         output = line
+
+        for rule in self.rules:
+            if rule.matches(line) and rule.skip:
+                return
 
         if self.block_color != "":
             for rule in self.rules:
