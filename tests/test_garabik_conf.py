@@ -160,3 +160,38 @@ def test_count_block():
         parser.feed(line)
     result = output.getvalue()
     assert result == expected
+
+
+def test_skip():
+    input_data = dedent(
+        """\
+        first line
+        second line
+        third line
+        fourth line
+        fifth line
+        """
+    )
+    expected = dedent(
+        """\
+        first line
+        second line
+        fourth line
+        fifth line
+        """
+    )
+    output = StringIO()
+    rules = [
+        garabik.Rule(
+            r"\b(third line)\b",
+            ["blue"],
+            count=garabik.Count.BLOCK,
+            skip=True,
+        ),
+    ]
+
+    parser = garabik.Parser(rules, output, Colors)
+    for line in input_data.splitlines(keepends=True):
+        parser.feed(line)
+    result = output.getvalue()
+    assert result == expected
