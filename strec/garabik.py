@@ -23,6 +23,7 @@ class ColorMap(Protocol):
 class Count(Enum):
     MORE = "more"
     STOP = "stop"
+    ONCE = "once"
 
 
 class ANSI:
@@ -109,8 +110,12 @@ class Parser:
     def feed(self, line: str) -> None:
         output = line
         for rule in self.rules:
+            count = 1 if rule.count == Count.ONCE else 0
             output = re.sub(
-                rule.regex, make_matcher(rule.colors, self.colors), output
+                rule.regex,
+                make_matcher(rule.colors, self.colors),
+                output,
+                count=count,
             )
             if rule.count == Count.STOP:
                 break

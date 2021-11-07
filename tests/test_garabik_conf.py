@@ -77,7 +77,7 @@ def test_count_more():
     assert result == expected
 
 
-def test_count_no_more():
+def test_count_stop():
     input_data = "this is a hello something world string"
     expected = "this is a <blue>hello<reset> something world string"
     output = StringIO()
@@ -91,6 +91,24 @@ def test_count_no_more():
             r"\b(world)\b",
             ["red"],
             count=garabik.Count.STOP,
+        ),
+    ]
+
+    parser = garabik.Parser(rules, output, Colors)
+    parser.feed(input_data)
+    result = output.getvalue()
+    assert result == expected
+
+
+def test_count_once():
+    input_data = "hello world hello world hello world"
+    expected = "hello <blue>world<reset> hello world hello world"
+    output = StringIO()
+    rules = [
+        garabik.Rule(
+            r"\b(world)\b",
+            ["blue"],
+            count=garabik.Count.ONCE,
         ),
     ]
 
