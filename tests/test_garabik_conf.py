@@ -236,3 +236,77 @@ def test_replace():
         parser.feed(line)
     result = output.getvalue()
     assert result == expected
+
+
+def test_parse_config_multiple():
+    """
+    We want to be able to convert a config file into a list of rules.
+    """
+    config_content = dedent(
+        r"""# Regular Up
+        regexp=\sup(?: (\d+) days?,)? +(\d+ min|\d+:\d+)(?=,)
+        colours=green,bold green, bold green
+        -
+        # users
+        regexp=\b(\d+) users?
+        colours=yellow,bold yellow
+        -
+        # load average
+        regexp=load average: (\d+[\.,]\d+),\s(\d+[\.,]\d+),\s(\d+[\.,]\d+)
+        colours=default,bright_cyan,cyan,dark cyan
+        -
+        # W Command section
+        # Title
+        regexp=^USER.*$
+        colours=bold
+        skip=false
+        count=more
+        """
+    )
+    rules = list(garabik.parse_config(config_content))
+    expected = [
+        garabik.Rule(
+            r"\sup(?: (\d+) days?,)? +(\d+ min|\d+:\d+)(?=,)",
+            ["green", "bold green", "bold green"],
+        ),
+        garabik.Rule(
+            r"\b(\d+) users?",
+            ["yellow", "bold yellow"],
+        ),
+        garabik.Rule(
+            r"load average: (\d+[\.,]\d+),\s(\d+[\.,]\d+),\s(\d+[\.,]\d+)",
+            ["default", "bright_cyan", "cyan", "dark cyan"],
+        ),
+        garabik.Rule(r"^USER.*$", ["bold"]),
+    ]
+    assert rules == expected
+
+
+def test_parse_config_single():
+    """
+    We want to be able to convert a config file into a list of rules.
+    """
+    config_content = dedent(
+        """# Regular Up
+        regexp=\sup(?: (\d+) days?,)? +(\d+ min|\d+:\d+)(?=,)
+        colours=green,bold green, bold green
+        """
+    )
+    rules = list(garabik.parse_config(config_content))
+    expected = [
+        garabik.Rule(
+            r"\sup(?: (\d+) days?,)? +(\d+ min|\d+:\d+)(?=,)",
+            ["green", "bold green", "bold green"],
+        ),
+    ]
+    assert rules == expected
+
+
+def test_parse_config_empty():
+    """
+    We want to be able to convert a config file into a list of rules.
+    """
+    config_content = ""
+    rules = list(garabik.parse_config(config_content))
+    expected = []
+    assert rules == expected

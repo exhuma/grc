@@ -5,9 +5,14 @@ https://github.com/garabik/grc
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import Callable, List, Protocol, TextIO
+from typing import Any, Callable, Generator, List, Protocol, TextIO
 
 UNCHANGED = "unchanged"
+RULE_SEPARATOR = re.compile(r"[^a-z0-9]", re.IGNORECASE)
+CONFIG_KEY_MAP = {
+    "colours": "colors",
+    "regexp": "regex",
+}
 
 
 class ColorMap(Protocol):
@@ -58,7 +63,7 @@ class Rule:
     # TODO: Might make sense to use a compiled pattern
     regex: str
     colors: List[str]
-    count: Count
+    count: Count = Count.MORE
     skip: bool = False
     replace: str = ""
 
@@ -67,6 +72,38 @@ class Rule:
         Returns True if the line matches this rule.
         """
         return bool(re.search(self.regex, line))
+
+
+def convert(key: str, value: str) -> Any:
+    if key == "colours":
+        return [item.strip() for item in value.split(",")]
+    if key == "count":
+        return Count(value)
+    if key == "skip":
+        return value.lower() == "true"
+    return value
+
+
+def parse_config(config_content: str) -> Generator[Rule, None, None]:
+    rule_options = {}
+    for line in config_content.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip()
+        value = convert(key, value)
+
+        if RULE_SEPARATOR.fullmatch(line[0]):
+            yield Rule(**rule_options)
+            rule_options.clear()
+        else:
+            rule_options[CONFIG_KEY_MAP.get(key, key)] = value
+
+    if rule_options:
+        yield Rule(**rule_options)
 
 
 def make_matcher(
