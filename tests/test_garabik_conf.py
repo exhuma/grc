@@ -13,19 +13,24 @@ class Colors:
             "blue": "<blue>",
             "red": "<red>",
             "yellow": "<yellow>",
+            "cyan": "<cyan>",
+            "bold magenta": "<bold magenta>",
             "reset": "<reset>",
             "default": "<reset>",
+            "unchanged": "<unchanged>",
         }
-        return data[name]
+        return data.get(name, "")
 
 
 def test_color_list():
-    input_data = "this is a hello something world string"
-    expected = "this is a <blue>hello<reset> something <red>world<reset> string"
+    input_data = "the quick brown fox jumps over the lazy dog"
+    expected = (
+        "the <blue>quick<reset> brown <red>fox<reset> jumps over the lazy dog"
+    )
     output = StringIO()
     rules = [
         garabik.Rule(
-            r"\b(hello) something (world)\b",
+            r"\b(quick) brown (fox)\b",
             ["blue", "red"],
             count=garabik.Count.MORE,
         ),
@@ -209,12 +214,12 @@ def test_replace():
     )
     expected = dedent(
         """\
-        <blue><yellow>hello<reset> first <blue>world<reset> line
-        <reset><blue><yellow>hello<reset> second <blue>world<reset> line
-        <reset><blue><yellow>hello<reset> third <blue>world<reset> line
-        <reset><blue><yellow>hello<reset> fourth <blue>world<reset> line
-        <reset><blue><yellow>hello<reset> fifth <blue>world<reset> line
-        <reset>"""
+        <yellow>hello<reset> first <blue>world<reset> line
+        <yellow>hello<reset> second <blue>world<reset> line
+        <yellow>hello<reset> third <blue>world<reset> line
+        <yellow>hello<reset> fourth <blue>world<reset> line
+        <yellow>hello<reset> fifth <blue>world<reset> line
+        """
     )
     output = StringIO()
     rules = [
@@ -234,6 +239,29 @@ def test_replace():
     parser = garabik.Parser(rules, output, Colors)
     for line in input_data.splitlines(keepends=True):
         parser.feed(line)
+    result = output.getvalue()
+    print(result)
+    assert result == expected
+
+
+def test_ungrouped_text():
+    """
+    If a regex contains ungrouped text, this text should be copied unmodified to
+    the output.
+    """
+    line = "the quick brown fox"
+    expected = "the quick <blue>brown<reset> fox"
+    output = StringIO()
+    rules = [
+        garabik.Rule(
+            r"quick (\w+) fox",
+            ["blue"],
+            count=garabik.Count.MORE,
+        ),
+    ]
+
+    parser = garabik.Parser(rules, output, Colors)
+    parser.feed(line)
     result = output.getvalue()
     assert result == expected
 
@@ -310,3 +338,148 @@ def test_parse_config_empty():
     rules = list(garabik.parse_config(config_content))
     expected = []
     assert rules == expected
+
+
+def test_unmatched_regex_group():
+    """
+    If a rule regex has a capturing group, but that group does not match on a
+    given line, the output should not be moodified for that group.
+    """
+    line = "-rw-rw-r-- 1 streamer streamer  344 Nov  7 17:52 CHANGELOG.rst\n"
+    rule = garabik.Rule(
+        regex="([A-Z][a-z]{2})\\s([ 1-3]\\d)\\s(?:([0-2]?\\d):([0-5]\\d)(?=[\\s,]|$)|\\s*(\\d{4}))",
+        colors=["cyan", "cyan", "cyan", "cyan", "bold magenta"],
+        count=garabik.Count.MORE,
+        skip=False,
+        replace="",
+    )
+    expected = (
+        "-rw-rw-r-- 1 streamer streamer  344 <cyan>Nov<reset> <cyan> 7<reset> "
+        "<cyan>17<reset>:<cyan>52<reset> CHANGELOG.rst\n"
+    )
+    output = StringIO()
+    rules = [rule]
+    parser = garabik.Parser(rules, output, Colors)
+    parser.feed(line)
+    assert output.getvalue() == expected
+
+
+@pytest.mark.skip()
+def test_something():  # TODO: rename test
+    rules = list(
+        garabik.parse_config(
+            dedent(
+                r"""
+                regexp=(-|[a-z])(r)
+                colours=blue,yellow
+                """
+            )
+        )
+    )
+    line = "-rw-rwar--\n"
+    expected = "<blue>-<reset><yellow>r<reset>w<blue>-<reset><yellow>r<reset>w<blue>a<reset><yellow>r<reset>--\n"
+    output = StringIO()
+    parser = garabik.Parser(rules, output, Colors)
+    parser.feed(line)
+    print("Result:", repr(output.getvalue()))
+    assert output.getvalue() == expected
+    1 / 0
+
+
+@pytest.mark.skip()
+def test_else():  # TODO: rename test
+    rules = list(
+        # XXX garabik.parse_config(
+        # XXX     dedent(
+        # XXX         r"""
+        # XXX         regexp=([A-Z][a-z]{2})\s([ 1-3]\d)\s(?:([0-2]?\d):([0-5]\d)(?=[\s,]|$)|\s*(\d{4}))
+        # XXX         colours=unchanged,cyan,cyan,cyan,cyan,bold magenta
+        # XXX         """
+        # XXX     )
+        # XXX )
+        garabik.parse_config(
+            dedent(
+                r"""
+                regexp=(drwx)(rwx)r-x
+                colours=cyan,yellow
+                ----
+                regexp=(?=(streamer) (streamer) (4096))
+                colours=unchanged,red,blue
+                """
+            )
+        )
+    )
+    line = "drwxrwxr-x 4 streamer streamer 4096 Nov 16 09:20 strec\n"
+    output = StringIO()
+    parser = garabik.Parser(rules, output, Colors)
+    parser.feed(line)
+    print("Result:", repr(output.getvalue()))
+    1 / 0
+
+
+@pytest.mark.skip()
+def test_another():  # TODO: rename test
+    rules = list(
+        garabik.parse_config(
+            dedent(
+                r"""
+                regexp=([A-Z][a-z]{2})\s([ 1-3]\d)\s(?:([0-2]?\d):([0-5]\d)(?=[\s,]|$)|\s*(\d{4}))
+                colours=cyan,cyan,cyan,cyan,bold magenta
+                """
+            )
+        )
+    )
+    line1 = "drwxrwxr-x 4 streamer streamer 4096 Nov 16  1996 strec\n"
+    line2 = "drwxrwxr-x 4 streamer streamer 4096 Nov 16 09:20 strec\n"
+    expected = (
+        "drwxrwxr-x 4 streamer streamer 4096 "
+        "<cyan>Nov<reset> <cyan>16<reset> <cyan>09<reset>:<cyan>20<reset> "
+        "strec\n"
+    )
+    output = StringIO()
+    parser = garabik.Parser(rules, output, Colors)
+    parser.feed(line2)
+    print("Result:", repr(output.getvalue()))
+    assert output.getvalue() == expected
+    1 / 0
+
+
+@pytest.mark.skip("TODO")
+def test_upstream_ls():
+    line = "drwxrwxr-x 3 streamer streamer 4096 Nov  7 17:52 docs\n"
+    with open("conf.ls") as fptr:
+        rules = garabik.parse_config(fptr.read())
+    output = StringIO()
+    parser = garabik.Parser(rules, output, Colors)
+    parser.feed(line)
+    print(output.getvalue())
+    1 / 0
+
+
+def test_lookbehind():
+    """
+    If an earlier rule adds color-codes, lookbehinds should not break
+
+    This is a behaviour of the old "grc" and should not be broken if we want to
+    keep the config compatible.
+    """
+    line = "the quick brown fox jumps over the lazy dog"
+    rules = garabik.parse_config(
+        dedent(
+            r"""
+            regexp=brown (fox)
+            colours=blue
+            ---
+            regexp=(?<=fox)\s(jumps)
+            colours=cyan
+            """
+        )
+    )
+    output = StringIO()
+    parser = garabik.Parser(rules, output, Colors)
+    parser.feed(line)
+    result = output.getvalue()
+    expected = (
+        "the quick brown <blue>fox<reset> <cyan>jumps<reset> over the lazy dog"
+    )
+    assert result == expected
