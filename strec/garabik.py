@@ -16,6 +16,7 @@ from typing import (
     Pattern,
     Protocol,
     TextIO,
+    Tuple,
 )
 
 UNCHANGED = "unchanged"
@@ -134,16 +135,17 @@ class Rule:
         return bool(re.search(self.regex, line))
 
 
-def convert(key: str, value: str) -> Any:
-    if key == "colours":
-        return [item.strip() for item in value.split(",")]
+def convert(key: str, value: str) -> Tuple[str, Any]:
+    if key in {"colour", "colours", "color", "colors"}:
+        return "colours", [item.strip() for item in value.split(",")]
     if key == "count":
-        return Count(value)
+        return key, Count(value)
     if key == "skip":
-        return value.lower() == "true"
+        return key, value.lower() == "true"
     if key == "regexp":
-        return re.compile(value)
-    return value
+        pattern = re.compile(value)
+        return key, pattern
+    return key, value
 
 
 def parse_config(config_content: str) -> list[Rule]:
@@ -157,7 +159,7 @@ def parse_config(config_content: str) -> list[Rule]:
         key, _, value = line.partition("=")
         key = key.strip()
         value = value.strip()
-        value = convert(key, value)
+        key, value = convert(key, value)
 
         if RULE_SEPARATOR.fullmatch(line[0]):
             output.append(Rule(**rule_options))
