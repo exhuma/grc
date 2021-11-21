@@ -179,7 +179,7 @@ def apply_replacements(text: str, replacements: List[Replacement]) -> str:
 
 
 def get_replacements(
-    match: re.Match, rule: Rule, colors: Mapping[str, str]
+    match: re.Match, rule: Rule, colors: ColorMap
 ) -> Iterable[Replacement]:
     for group_index in range(1, len(match.groups()) + 1):
         if match.group(group_index) is None:
