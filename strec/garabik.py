@@ -6,7 +6,16 @@ import re
 from array import array
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Generator, List, Protocol, TextIO
+from typing import (
+    Any,
+    Callable,
+    Generator,
+    Iterable,
+    List,
+    Mapping,
+    Protocol,
+    TextIO,
+)
 
 UNCHANGED = "unchanged"
 RULE_SEPARATOR = re.compile(r"[^a-z0-9]", re.IGNORECASE)
@@ -158,68 +167,26 @@ def parse_config(config_content: str) -> list[Rule]:
     return output
 
 
-def make_matcher(
-    colors: List[str], color_map: ColorMap
-) -> Callable[[re.Match[str]], str]:
-    """
-    Create a function that converts a :py:class:`re.Match` object into a
-    colorised string.
-
-    This function can be used by :py:func:`re.sub`
-
-    :param colors: The colors used for replacement.
-    :param color_map: The definition of the special control-characters for the
-        colors to use.
-    """
-
-    def replace_match(match: re.Match[str]) -> str:
-        """
-        Create a colorised string from a :py:class:`re.Match` object.
-        """
-        output: List[str] = []
-        # Keep a track of the end of each group because we need to copy the
-        # characters which sit in between the groups into the resulting output
-        end_of_group = match.start(0)
-        for group_index, (grp, color) in enumerate(
-            zip(match.groups(), colors), start=1
-        ):
-            print(f"      {group_index} {grp!r} {color}")
-            span = slice(*match.span(group_index))
-            if span.start == -1:
-                continue
-            if end_of_group:
-                output.append(match.string[end_of_group : span.start])
-            output.append(
-                f"{color_map.get(color)}{grp}{color_map.get('reset')}"
-            )
-            end_of_group = span.stop
-        output.append(match.string[end_of_group : match.end(0)])
-        return "".join(output)
-
-        # TODO: the garabik conf for "ls" contains an group with "unchanged"
-        #       color as first element. But running it through upstream
-        #       garabik/grc still colorises that group which is not in line with
-        #       re.sub()
-        1 / 0
-
-        return match.expand("foo >\\1< bar")
-
-        full_text = match.group(0)
-        offset = match.start(0)
-        for i in range(1, len(match.groups()) + 1):
-            end_position = None
-
-        return output
-
-    return replace_match
-
-
 def apply_replacements(text: str, replacements: List[Replacement]) -> str:
     buffer = array("u", text)
     # Python bug? Applying only "reversed" is not sufficient! Must also call "sorted"
     for rpl in reversed(sorted(replacements)):
         buffer[rpl.span] = array("u", rpl.text)
     return buffer.tounicode()
+
+
+def get_replacements(
+    match: re.Match, rule: Rule, colors: Mapping[str, str]
+) -> Iterable[Replacement]:
+    for group_index in range(1, len(match.groups()) + 1):
+        if match.group(group_index) is None:
+            continue
+        slc = slice(*match.span(group_index))
+        clr = rule.colors[group_index - 1]
+        yield Replacement(
+            slc,
+            f"{colors.get(clr)}{match.string[slc]}{colors.get('reset')}",
+        )
 
 
 class Parser:
@@ -255,24 +222,12 @@ class Parser:
 
         replacements: List[Replacement] = []
         for rule in self.rules:
-            count = 1 if rule.count == Count.ONCE else 0
-
             if rule.replace and rule.matches(output):
                 output = re.sub(rule.regex, rule.replace, output)
 
             match = re.search(rule.regex, output)
             if match:
-                for group_index in range(1, len(match.groups()) + 1):
-                    if match.group(group_index) is None:
-                        continue
-                    slc = slice(*match.span(group_index))
-                    clr = rule.colors[group_index - 1]
-                    replacements.append(
-                        Replacement(
-                            slc,
-                            f"{self.colors.get(clr)}{match.string[slc]}{self.colors.get('reset')}",
-                        )
-                    )
+                replacements.extend(get_replacements(match, rule, self.colors))
 
             if rule.count == Count.STOP:
                 break
