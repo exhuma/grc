@@ -225,8 +225,8 @@ class Parser:
             if rule.replace and rule.matches(output):
                 output = re.sub(rule.regex, rule.replace, output)
 
-            match = re.search(rule.regex, output)
-            if match:
+            matches = re.finditer(rule.regex, output)
+            for match in matches:
                 replacements.extend(get_replacements(match, rule, self.colors))
 
             if rule.count == Count.STOP:
