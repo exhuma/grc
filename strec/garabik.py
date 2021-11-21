@@ -13,6 +13,7 @@ from typing import (
     Iterable,
     List,
     Mapping,
+    Pattern,
     Protocol,
     TextIO,
 )
@@ -120,7 +121,7 @@ class Rule:
     """
 
     # TODO: Might make sense to use a compiled pattern
-    regex: str
+    regex: Pattern
     colors: List[str]
     count: Count = Count.MORE
     skip: bool = False
@@ -140,6 +141,8 @@ def convert(key: str, value: str) -> Any:
         return Count(value)
     if key == "skip":
         return value.lower() == "true"
+    if key == "regexp":
+        return re.compile(value)
     return value
 
 
@@ -223,9 +226,9 @@ class Parser:
         replacements: List[Replacement] = []
         for rule in self.rules:
             if rule.replace and rule.matches(output):
-                output = re.sub(rule.regex, rule.replace, output)
+                output = rule.regex.sub(rule.replace, output)
 
-            matches = re.finditer(rule.regex, output)
+            matches = rule.regex.finditer(output)
             for match in matches:
                 replacements.extend(get_replacements(match, rule, self.colors))
                 if rule.count == Count.ONCE:

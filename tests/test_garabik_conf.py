@@ -1,3 +1,4 @@
+import re
 from io import StringIO
 from textwrap import dedent
 
@@ -30,7 +31,7 @@ def test_color_list():
     output = StringIO()
     rules = [
         garabik.Rule(
-            r"\b(quick) brown (fox)\b",
+            re.compile(r"\b(quick) brown (fox)\b"),
             ["blue", "red"],
             count=garabik.Count.MORE,
         ),
@@ -53,7 +54,8 @@ def test_color_list2():
     output = StringIO()
     rules = [
         garabik.Rule(
-            r"beginning \b(hello) something (world)\b", ["blue", "red"]
+            re.compile(r"beginning \b(hello) something (world)\b"),
+            ["blue", "red"],
         ),
     ]
 
@@ -69,12 +71,12 @@ def test_count_more():
     output = StringIO()
     rules = [
         garabik.Rule(
-            r"\b(hello)\b",
+            re.compile(r"\b(hello)\b"),
             ["blue"],
             count=garabik.Count.MORE,
         ),
         garabik.Rule(
-            r"\b(world)\b",
+            re.compile(r"\b(world)\b"),
             ["red"],
             count=garabik.Count.MORE,
         ),
@@ -92,12 +94,12 @@ def test_count_stop():
     output = StringIO()
     rules = [
         garabik.Rule(
-            r"\b(hello)\b",
+            re.compile(r"\b(hello)\b"),
             ["blue"],
             count=garabik.Count.STOP,
         ),
         garabik.Rule(
-            r"\b(world)\b",
+            re.compile(r"\b(world)\b"),
             ["red"],
             count=garabik.Count.STOP,
         ),
@@ -115,7 +117,7 @@ def test_count_once():
     output = StringIO()
     rules = [
         garabik.Rule(
-            r"\b(world)\b",
+            re.compile(r"\b(world)\b"),
             ["blue"],
             count=garabik.Count.ONCE,
         ),
@@ -149,12 +151,12 @@ def test_count_block():
     output = StringIO()
     rules = [
         garabik.Rule(
-            r"\b(second line)\b",
+            re.compile(r"\b(second line)\b"),
             ["blue"],
             count=garabik.Count.BLOCK,
         ),
         garabik.Rule(
-            r"\b(fourth line)\b",
+            re.compile(r"\b(fourth line)\b"),
             ["default"],
             count=garabik.Count.UNBLOCK,
         ),
@@ -188,7 +190,7 @@ def test_skip():
     output = StringIO()
     rules = [
         garabik.Rule(
-            r"\b(third line)\b",
+            re.compile(r"\b(third line)\b"),
             ["blue"],
             count=garabik.Count.BLOCK,
             skip=True,
@@ -224,13 +226,13 @@ def test_replace():
     output = StringIO()
     rules = [
         garabik.Rule(
-            r"\b(\w+) line\b",
+            re.compile(r"\b(\w+) line\b"),
             ["blue"],
             count=garabik.Count.MORE,
             replace=r"hello \1 world line",
         ),
         garabik.Rule(
-            r"\b(hello)\b",
+            re.compile(r"\b(hello)\b"),
             ["yellow"],
             count=garabik.Count.MORE,
         ),
@@ -254,7 +256,7 @@ def test_ungrouped_text():
     output = StringIO()
     rules = [
         garabik.Rule(
-            r"quick (\w+) fox",
+            re.compile(r"quick (\w+) fox"),
             ["blue"],
             count=garabik.Count.MORE,
         ),
@@ -294,18 +296,20 @@ def test_parse_config_multiple():
     rules = list(garabik.parse_config(config_content))
     expected = [
         garabik.Rule(
-            r"\sup(?: (\d+) days?,)? +(\d+ min|\d+:\d+)(?=,)",
+            re.compile(r"\sup(?: (\d+) days?,)? +(\d+ min|\d+:\d+)(?=,)"),
             ["green", "bold green", "bold green"],
         ),
         garabik.Rule(
-            r"\b(\d+) users?",
+            re.compile(r"\b(\d+) users?"),
             ["yellow", "bold yellow"],
         ),
         garabik.Rule(
-            r"load average: (\d+[\.,]\d+),\s(\d+[\.,]\d+),\s(\d+[\.,]\d+)",
+            re.compile(
+                r"load average: (\d+[\.,]\d+),\s(\d+[\.,]\d+),\s(\d+[\.,]\d+)"
+            ),
             ["default", "bright_cyan", "cyan", "dark cyan"],
         ),
-        garabik.Rule(r"^USER.*$", ["bold"]),
+        garabik.Rule(re.compile(r"^USER.*$"), ["bold"]),
     ]
     assert rules == expected
 
@@ -323,7 +327,7 @@ def test_parse_config_single():
     rules = list(garabik.parse_config(config_content))
     expected = [
         garabik.Rule(
-            r"\sup(?: (\d+) days?,)? +(\d+ min|\d+:\d+)(?=,)",
+            re.compile(r"\sup(?: (\d+) days?,)? +(\d+ min|\d+:\d+)(?=,)"),
             ["green", "bold green", "bold green"],
         ),
     ]
@@ -347,7 +351,9 @@ def test_unmatched_regex_group():
     """
     line = "-rw-rw-r-- 1 streamer streamer  344 Nov  7 17:52 CHANGELOG.rst\n"
     rule = garabik.Rule(
-        regex="([A-Z][a-z]{2})\\s([ 1-3]\\d)\\s(?:([0-2]?\\d):([0-5]\\d)(?=[\\s,]|$)|\\s*(\\d{4}))",
+        regex=re.compile(
+            "([A-Z][a-z]{2})\\s([ 1-3]\\d)\\s(?:([0-2]?\\d):([0-5]\\d)(?=[\\s,]|$)|\\s*(\\d{4}))"
+        ),
         colors=["cyan", "cyan", "cyan", "cyan", "bold magenta"],
         count=garabik.Count.MORE,
         skip=False,
