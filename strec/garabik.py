@@ -228,6 +228,8 @@ class Parser:
             matches = re.finditer(rule.regex, output)
             for match in matches:
                 replacements.extend(get_replacements(match, rule, self.colors))
+                if rule.count == Count.ONCE:
+                    break
 
             if rule.count == Count.STOP:
                 break
