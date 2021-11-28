@@ -9,6 +9,7 @@ TODO
 """
 
 import re
+import subprocess as sp
 import sys
 from argparse import ArgumentParser
 from os.path import basename, exists, join
@@ -96,10 +97,9 @@ def process_lines(source, parser):
         parser.feed(line)
 
 
-def create_pty(cmd, args):
-    cmd = basename(cmd)
-    source = pexpect.spawn(" ".join([cmd] + args), maxread=1, encoding="utf8")
-    return source
+def create_pty(args):
+    proc = sp.Popen(args, stdout=sp.PIPE, text=True)
+    return proc.stdout
 
 
 def create_stdin(config_name):
@@ -119,8 +119,7 @@ def run(stream, args):
     if args.cmd:
         cmd = basename(args.cmd[0])
         rules = load_config(args.config_name or cmd)
-        cmdargs = args.cmd[1:]
-        source = create_pty(cmd, cmdargs)
+        source = create_pty(args.cmd)
     else:
         source = create_stdin(args.config_name)
         rules = load_config(args.config_name)
