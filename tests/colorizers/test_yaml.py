@@ -8,22 +8,26 @@ import pytest
 
 import strec.core as core
 from strec.colorizers import YamlColorizer
+from strec.garabik import ANSI
 
 
-class DirectMapping(dict):
-    def __getitem__(self, __k):
-        return f"<{__k}>"
+class TestColors(ANSI):
+
+    DATA = {
+        "blue": "<blue>",
+        "reset": "<reset>",
+    }
 
 
 @pytest.fixture
 def colorizer():
-    colors = DirectMapping()
+    colors = TestColors
     conf = {
         "root": [
             {
                 "match": "(hello-world)",
                 "push": "new-state",
-                "replace": r"{t.blue}\1{t.normal}",
+                "replace": r"{blue}\1{reset}",
             },
         ],
         "another-state": [
@@ -60,5 +64,5 @@ def test_stack_pop(colorizer):
 def test_process_line(colorizer):
     output, colorizer = colorizer
     colorizer.feed("hello-world")
-    expected = "{t.blue}hello-world{t.normal}"
+    expected = "<blue>hello-world<reset>"
     assert output.getvalue() == expected

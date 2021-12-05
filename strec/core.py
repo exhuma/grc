@@ -12,6 +12,7 @@ import re
 import subprocess as sp
 import sys
 from argparse import ArgumentParser
+from os import lseek
 from os.path import basename, exists, join
 
 import pexpect
@@ -64,40 +65,8 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-def find_conf(file_or_app_name):
-    """
-    Searches for a config file name.
-
-    Search order:
-        ~/.strec/conf.d/<appname>.yml
-        /etc/strec/conf.d/<appname>.yml
-        /usr/share/strec/conf.d/<appname>.yml
-
-    TIP:
-        If you have one config file that could be used for multiple
-        applications: symlink it!
-    """
-    if exists(file_or_app_name):
-        return file_or_app_name
-
-    for folder in CONF_LOCATIONS:
-        confname = join(folder, "%s.yml" % file_or_app_name)
-        if exists(confname):
-            if confname.endswith(".yml") or confname.endswith(".yaml"):
-                raise NotImplementedError(
-                    "YAML config files are not yet supported"
-                )
-            return confname
-
-    sys.stderr.write(
-        "No config found named '%s.yml'\n"
-        "Resolution order:\n   %s\n"
-        % (file_or_app_name, ",\n   ".join(CONF_LOCATIONS))
-    )
-    sys.exit(9)
-
-
 def load_config(config_name):
+    colorizer = Colorizer.from_basename(config_name)
     with open(find_conf(config_name)) as fptr:
         rules = parse_config(fptr.read())
     return rules
@@ -135,13 +104,12 @@ def run(stream, args):
 
     if args.cmd:
         cmd = basename(args.cmd[0])
-        rules = load_config(args.config_name or cmd)
+        parser = Colorizer.from_basename(args.config_name or cmd, stream, ANSI)
         source = create_pty(args.cmd)
     else:
+        parser = Colorizer.from_config_filename(args.config_name, stream, ANSI)
         source = create_stdin(args.config_name)
-        rules = load_config(args.config_name)
 
-    parser = Parser(rules, stream, ANSI)
     process_lines(source, parser)
 
 

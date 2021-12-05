@@ -20,12 +20,6 @@ def test_parse_args(args, config_name, cmd):
     assert result.cmd == cmd
 
 
-def test_find_config_missing():
-    with patch("strec.core.sys") as sys:
-        core.find_conf("testapp")
-    sys.exit.assert_called_with(9)
-
-
 def test_process_lines():
     source = StringIO("hello-world")
     colorizer = Mock()

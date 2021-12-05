@@ -1,6 +1,6 @@
 root:
     - match: '(^[dprwx-]{10})'
-      replace: '{t.blue}\1{t.normal}'
+      replace: '{blue}\1{reset}'
       continue: true
-    - match: '(\d+)'
-      replace: '{t.yellow}\1{t.normal}'
+    - match: '(\d{2}:\d{2})'
+      replace: '{yellow}\1{reset}'
