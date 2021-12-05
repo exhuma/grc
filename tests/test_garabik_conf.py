@@ -4,7 +4,7 @@ from textwrap import dedent
 
 import pytest
 
-import strec.garabik as garabik
+import strec.colorizers.garabik as garabik
 
 
 class Colors:
@@ -37,7 +37,7 @@ def test_color_list():
         ),
     ]
 
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(input_data)
     result = output.getvalue()
     assert result == expected
@@ -59,7 +59,7 @@ def test_color_list2():
         ),
     ]
 
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(input_data)
     result = output.getvalue()
     assert result == expected
@@ -82,7 +82,7 @@ def test_count_more():
         ),
     ]
 
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(input_data)
     result = output.getvalue()
     assert result == expected
@@ -105,7 +105,7 @@ def test_count_stop():
         ),
     ]
 
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(input_data)
     result = output.getvalue()
     assert result == expected
@@ -123,7 +123,7 @@ def test_count_once():
         ),
     ]
 
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(input_data)
     result = output.getvalue()
     assert result == expected
@@ -162,7 +162,7 @@ def test_count_block():
         ),
     ]
 
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     for line in input_data.splitlines(keepends=True):
         parser.feed(line)
     result = output.getvalue()
@@ -197,7 +197,7 @@ def test_skip():
         ),
     ]
 
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     for line in input_data.splitlines(keepends=True):
         parser.feed(line)
     result = output.getvalue()
@@ -238,7 +238,7 @@ def test_replace():
         ),
     ]
 
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     for line in input_data.splitlines(keepends=True):
         parser.feed(line)
     result = output.getvalue()
@@ -262,7 +262,7 @@ def test_ungrouped_text():
         ),
     ]
 
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(line)
     result = output.getvalue()
     assert result == expected
@@ -365,7 +365,7 @@ def test_unmatched_regex_group():
     )
     output = StringIO()
     rules = [rule]
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(line)
     assert output.getvalue() == expected
 
@@ -385,7 +385,7 @@ def test_something():  # TODO: rename test
     line = "-rw-rwar--\n"
     expected = "<blue>-<reset><yellow>r<reset>w<blue>-<reset><yellow>r<reset>w<blue>a<reset><yellow>r<reset>--\n"
     output = StringIO()
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(line)
     print("Result:", repr(output.getvalue()))
     assert output.getvalue() == expected
@@ -417,7 +417,7 @@ def test_else():  # TODO: rename test
     )
     line = "drwxrwxr-x 4 streamer streamer 4096 Nov 16 09:20 strec\n"
     output = StringIO()
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(line)
     print("Result:", repr(output.getvalue()))
     1 / 0
@@ -443,7 +443,7 @@ def test_another():  # TODO: rename test
         "strec\n"
     )
     output = StringIO()
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(line2)
     print("Result:", repr(output.getvalue()))
     assert output.getvalue() == expected
@@ -456,7 +456,7 @@ def test_upstream_ls():
     with open("conf.ls") as fptr:
         rules = garabik.parse_config(fptr.read())
     output = StringIO()
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(line)
     print(output.getvalue())
     1 / 0
@@ -482,7 +482,7 @@ def test_lookbehind():
         )
     )
     output = StringIO()
-    parser = garabik.Parser(rules, output, Colors)
+    parser = garabik.GarabikColorizer(rules, output, Colors)
     parser.feed(line)
     result = output.getvalue()
     expected = (

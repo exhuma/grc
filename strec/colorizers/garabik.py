@@ -6,18 +6,9 @@ import re
 from array import array
 from dataclasses import dataclass
 from enum import Enum
-from typing import (
-    Any,
-    Callable,
-    Generator,
-    Iterable,
-    List,
-    Mapping,
-    Pattern,
-    Protocol,
-    TextIO,
-    Tuple,
-)
+from typing import Any, Iterable, List, Pattern, TextIO, Tuple
+
+from strec.colorizers.base import Colorizer, ColorMap
 
 UNCHANGED = "unchanged"
 RULE_SEPARATOR = re.compile(r"[^a-z0-9]", re.IGNORECASE)
@@ -31,16 +22,6 @@ CONFIG_KEY_MAP = {
 class Replacement:
     span: slice
     text: str
-
-
-class ColorMap(Protocol):
-    """
-    The protocol used to map named colors to terminal control-characters
-    """
-
-    @staticmethod
-    def get(name: str) -> str:
-        ...
 
 
 class Count(Enum):
@@ -114,6 +95,10 @@ class ANSI:
         names = name.split()
         out = [ANSI.DATA.get(n, "") for n in names]
         return "".join(out)
+
+    @staticmethod
+    def items() -> Iterable[str]:
+        return ANSI.DATA.keys()
 
 
 @dataclass
@@ -195,7 +180,7 @@ def get_replacements(
         )
 
 
-class Parser:
+class GarabikColorizer(Colorizer):
     """
     The main implementation to process input lines and convert them to text
     with the appropriate control-characters.
@@ -243,3 +228,9 @@ class Parser:
                 self.block_color = rule.colors[0]
         output = apply_replacements(output, replacements)
         self.output.write(output)
+
+    @staticmethod
+    def from_config_filename(filename: str, output: TextIO, colors: ColorMap):
+        with open(filename) as fptr:
+            rules = parse_config(fptr.read())
+        return GarabikColorizer(rules, output, colors)

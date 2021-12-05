@@ -12,18 +12,10 @@ import re
 import subprocess as sp
 import sys
 from argparse import ArgumentParser
-from os import lseek
-from os.path import basename, exists, join
+from os.path import basename
 
-import pexpect
-import pkg_resources
-
-from strec import CONF_LOCATIONS
 from strec.colorizers import Colorizer
-from strec.garabik import ANSI, Parser, parse_config
-
-# Add the installation folder to the config search path
-CONF_LOCATIONS.append(pkg_resources.resource_filename("strec", "../configs"))
+from strec.colorizers.garabik import ANSI
 
 
 def parse_args(args):
@@ -63,13 +55,6 @@ def parse_args(args):
         nargs="*",
     )
     return parser.parse_args(args)
-
-
-def load_config(config_name):
-    colorizer = Colorizer.from_basename(config_name)
-    with open(find_conf(config_name)) as fptr:
-        rules = parse_config(fptr.read())
-    return rules
 
 
 def process_lines(source, parser):
