@@ -40,31 +40,6 @@ class YamlColorizer(Colorizer):
             conf = load(fptr, Loader=SafeLoader)
         return YamlColorizer(conf)
 
-    @staticmethod
-    def find_conf(appname):
-        """
-        Searches for a config file name.
-
-        Search order:
-            ~/.grc/conf.d/<appname>.yml
-            /etc/grc/conf.d/<appname>.yml
-            /usr/share/grc/conf.d/<appname>.yml
-
-        TIP:
-            If you have one config file that could be used for multiple
-            applications: symlink it!
-        """
-        for folder in CONF_LOCATIONS:
-            confname = join(folder, "%s.yml" % appname)
-            if exists(confname):
-                return confname
-
-        raise FileNotFoundError(
-            "No config found named '%s.yml'\n"
-            "Resolution order:\n   %s\n"
-            % (appname, ",\n   ".join(CONF_LOCATIONS))
-        )
-
     def __init__(
         self, conf: Dict[str, Any], output: TextIO, colors: Any
     ) -> None:

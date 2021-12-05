@@ -62,17 +62,3 @@ def test_process_line(colorizer):
     colorizer.feed("hello-world")
     expected = "{t.blue}hello-world{t.normal}"
     assert output.getvalue() == expected
-
-
-def test_find_conf_missing():
-    with patch("strec.colorizers.exists") as exists:
-        exists.return_value = False
-        with pytest.raises(FileNotFoundError) as exc:
-            YamlColorizer.find_conf("appname")
-
-
-def test_find_conf_existing():
-    with patch("strec.colorizers.exists") as exists:
-        exists.return_value = True
-        result = YamlColorizer.find_conf("appname")
-        assert result.endswith("appname.yml")
