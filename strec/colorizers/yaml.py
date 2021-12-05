@@ -3,7 +3,8 @@ from typing import Any, Dict, TextIO
 
 from yaml import SafeLoader, load
 
-from strec.colorizers.base import Colorizer, ColorMap
+from strec.colorizers.base import Colorizer
+from strec.themes import ColorMap
 
 
 class YamlColorizer(Colorizer):

@@ -6,9 +6,8 @@ from unittest.mock import patch
 
 import pytest
 
-import strec.core as core
-from strec.colorizers.garabik import ANSI
 from strec.colorizers.yaml import YamlColorizer
+from strec.themes.ansi import ANSI
 
 
 class TestColors(ANSI):

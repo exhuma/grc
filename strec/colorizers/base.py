@@ -2,12 +2,12 @@ import sys
 from abc import ABCMeta, abstractmethod
 from os.path import basename, exists, join
 from posixpath import expanduser
-from typing import Iterable, TextIO, Tuple
+from typing import TextIO
 
 import pkg_resources
-from typing_extensions import Protocol
 
 from strec.exc import StrecException
+from strec.themes import ColorMap
 
 CONF_LOCATIONS = [
     join(expanduser("~"), ".strec", "conf.d"),
@@ -17,20 +17,6 @@ CONF_LOCATIONS = [
 
 # Add the installation folder to the config search path
 CONF_LOCATIONS.append(pkg_resources.resource_filename("strec", "../configs"))
-
-
-class ColorMap(Protocol):
-    """
-    The protocol used to map named colors to terminal control-characters
-    """
-
-    @staticmethod
-    def get(name: str) -> str:
-        ...
-
-    @staticmethod
-    def items() -> Iterable[Tuple[str, str]]:
-        ...
 
 
 def find_conf(file_or_app_name):

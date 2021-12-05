@@ -15,7 +15,7 @@ from argparse import ArgumentParser
 from os.path import basename
 
 from strec.colorizers import Colorizer
-from strec.colorizers.garabik import ANSI
+from strec.themes.ansi import ANSI
 
 
 def parse_args(args):
