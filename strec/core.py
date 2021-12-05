@@ -30,19 +30,36 @@ def parse_args(args):
     Returns a tuple of command-line options and remaining arguments (see
     optparse)
     """
-    parser = ArgumentParser()
+    parser = ArgumentParser(
+        description=(
+            "Colorise any text-stream by either reading from stdin or "
+            "calling a process in a subshell, applying coloring rules via "
+            "regexes and writing back the colorised output"
+        )
+    )
     parser.add_argument(
         "-c",
         "--config",
         dest="config_name",
         help=(
-            "Use NAME as config-name. Overrides auto-detection. The file "
-            "should exist in the folders searched for configs."
+            "Use NAME as config-name. Overrides auto-detection. This can "
+            "either point to an existing file, or a simple relative filename. "
+            "In the latter case the filename is looked up in bundled "
+            "config-files."
         ),
         metavar="NAME",
     )
     parser.add_argument(
-        "cmd", help="The command to run and colorize.", nargs="*"
+        "cmd",
+        help=(
+            "The command to run and colorize. Some shells may require "
+            "separating this with a '--' from the strec command (f.ex. "
+            "'strec -c <conf-file> -- ls -l'). If run like this, strec is able "
+            "to auto-detect the colorisation file. As an alternative, strec "
+            "can also read from stding in which case this argument is "
+            "redundant."
+        ),
+        nargs="*",
     )
     return parser.parse_args(args)
 
