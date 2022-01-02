@@ -15,3 +15,9 @@ max-line-length = "80"
 [tool.mypy]
 strict = true
 exclude = ".*tests.*"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+]
