@@ -14,3 +14,4 @@ max-line-length = "80"
 
 [tool.mypy]
 strict = true
+exclude = ".*tests.*"

@@ -162,7 +162,9 @@ class GarabikColorizer(Colorizer):
         self.output.write(output)
 
     @staticmethod
-    def from_config_filename(filename: str, output: IO[str], colors: ColorMap):
+    def from_config_filename(
+        filename: str, output: IO[str], colors: ColorMap
+    ) -> "GarabikColorizer":
         with open(filename) as fptr:
             rules = parse_config(fptr.read())
         return GarabikColorizer(rules, output, colors)

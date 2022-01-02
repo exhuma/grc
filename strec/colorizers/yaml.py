@@ -9,7 +9,9 @@ from strec.themes import ColorMap
 
 class YamlColorizer(Colorizer):
     @staticmethod
-    def from_config_filename(filename: str, output: IO[str], colors: ColorMap):
+    def from_config_filename(
+        filename: str, output: IO[str], colors: ColorMap
+    ) -> "YamlColorizer":
         with open(filename) as fptr:
             conf = load(fptr, Loader=SafeLoader)
         return YamlColorizer(conf, output, colors)

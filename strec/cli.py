@@ -53,12 +53,12 @@ def run(stream: IO[str], args: Optional[List[str]]) -> None:
     if parsed_args.cmd:
         cmd = basename(parsed_args.cmd[0])
         parser = Colorizer.from_basename(
-            parsed_args.config_name or cmd, stream, ANSI
+            parsed_args.config_name or cmd, stream, ANSI()
         )
         source = create_pty(parsed_args.cmd)
     else:
         parser = Colorizer.from_config_filename(
-            parsed_args.config_name, stream, ANSI
+            parsed_args.config_name, stream, ANSI()
         )
         source = create_stdin(parsed_args.config_name)
 
@@ -68,6 +68,6 @@ def run(stream: IO[str], args: Optional[List[str]]) -> None:
     process_lines(source, parser)
 
 
-def main():  # pragma: no cover
+def main() -> None:  # pragma: no cover
     with open(sys.stdout.fileno(), "w", buffering=1) as stdout:
         run(stdout, None)

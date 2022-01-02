@@ -13,7 +13,7 @@ from typing import IO, List, Optional
 from strec.colorizers.base import Colorizer
 
 
-def process_lines(source: IO[str], parser: Colorizer):
+def process_lines(source: IO[str], parser: Colorizer) -> None:
     """
     Read lines from *source* and process them until an empty-line is read.
     """
