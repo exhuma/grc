@@ -17,8 +17,8 @@ CONF_LOCATIONS = [
 ]
 
 # Prepend config-folder specified as environment variable
-if "STREC_CONFIGS" in environ:
-    CONF_LOCATIONS.insert(0, environ["STREC_CONFIGS"])
+if "STREC_CONFIG_PATH" in environ:
+    CONF_LOCATIONS.insert(0, environ["STREC_CONFIG_PATH"])
 
 # Add the installation folder to the config search path
 CONF_LOCATIONS.append(pkg_resources.resource_filename("strec", "../configs"))
