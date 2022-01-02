@@ -56,7 +56,7 @@ def find_conf(file_or_app_name: str) -> str:
         "Resolution order:\n   %s\n"
         % (file_or_app_name, ",\n   ".join(CONF_LOCATIONS))
     )
-    sys.exit(9)
+    return ""
 
 
 class Colorizer(metaclass=ABCMeta):
