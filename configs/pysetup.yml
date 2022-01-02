@@ -44,4 +44,3 @@ dependency:
     - match: '^ \| Installed(.*)'
       replace: ' | Installed\1\n'
       pop: yes
-

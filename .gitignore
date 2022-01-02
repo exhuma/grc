@@ -1,8 +1,9 @@
 *.egg-info
 *.pyc
+*.pyc
+.coverage
 __pycache__
 build
 dist
 docs/_build
 env
-*.pyc

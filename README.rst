@@ -1,10 +1,9 @@
 Generic Coloriser
 =================
 
-.. image:: https://readthedocs.org/projects/grc/badge/?version=latest
-   :target: https://grc.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/strec/badge/?version=latest
+   :target: https://strec.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-
 
 WARNING - Pending Project Rename
 ================================
@@ -15,4 +14,4 @@ from ``grc`` to show that it's a different project. While both *do* the same,
 they do it in a very different manner, and more importantly, the config format
 is different.
 
-See https://grc.readthedocs.io/en/latest (or docs/README.rst)
+See https://strec.readthedocs.io/en/latest (or docs/README.rst)
