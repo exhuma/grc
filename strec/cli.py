@@ -1,13 +1,14 @@
 import sys
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 from os.path import basename
+from typing import IO, List, Optional
 
 from strec.colorizers import Colorizer
 from strec.core import create_pty, create_stdin, process_lines
 from strec.themes.ansi import ANSI
 
 
-def parse_args(args):
+def parse_args(args: Optional[List[str]]) -> Namespace:
     """
     Returns a tuple of command-line options and remaining arguments (see
     optparse)
@@ -46,17 +47,24 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-def run(stream, args):
-    args = parse_args(args)
+def run(stream: IO[str], args: Optional[List[str]]) -> None:
+    parsed_args = parse_args(args)
 
-    if args.cmd:
-        cmd = basename(args.cmd[0])
-        parser = Colorizer.from_basename(args.config_name or cmd, stream, ANSI)
-        source = create_pty(args.cmd)
+    if parsed_args.cmd:
+        cmd = basename(parsed_args.cmd[0])
+        parser = Colorizer.from_basename(
+            parsed_args.config_name or cmd, stream, ANSI
+        )
+        source = create_pty(parsed_args.cmd)
     else:
-        parser = Colorizer.from_config_filename(args.config_name, stream, ANSI)
-        source = create_stdin(args.config_name)
+        parser = Colorizer.from_config_filename(
+            parsed_args.config_name, stream, ANSI
+        )
+        source = create_stdin(parsed_args.config_name)
 
+    if source is None:
+        sys.stderr.write("Unexpected error when opening the text input")
+        return
     process_lines(source, parser)
 
 

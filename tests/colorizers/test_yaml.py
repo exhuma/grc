@@ -2,7 +2,7 @@
 Tests for the "strec"-style YAML based coloriser
 """
 from io import StringIO
-from unittest.mock import patch
+from typing import Tuple
 
 import pytest
 
@@ -19,7 +19,7 @@ class TestColors(ANSI):
 
 
 @pytest.fixture
-def colorizer():
+def colorizer_fixture():
     colors = TestColors
     conf = {
         "root": [
@@ -41,27 +41,27 @@ def colorizer():
     yield output, coloriser
 
 
-def test_stack_push(colorizer):
+def test_stack_push(colorizer_fixture: Tuple[StringIO, YamlColorizer]):
     """
     Make sure we push onto the stack if a line matches a pushing condition
     """
-    _, colorizer = colorizer
+    _, colorizer = colorizer_fixture
     colorizer.feed("hello-world")
     assert colorizer.state == ["root", "new-state"]
 
 
-def test_stack_pop(colorizer):
+def test_stack_pop(colorizer_fixture: Tuple[StringIO, YamlColorizer]):
     """
     Make sure we pop from the stack if a line matches a popping condition
     """
-    _, colorizer = colorizer
+    _, colorizer = colorizer_fixture
     colorizer.state = ["root", "another-state"]
     colorizer.feed("hello-world")
     assert colorizer.state == ["root"]
 
 
-def test_process_line(colorizer):
-    output, colorizer = colorizer
+def test_process_line(colorizer_fixture: Tuple[StringIO, YamlColorizer]):
+    output, colorizer = colorizer_fixture
     colorizer.feed("hello-world")
     expected = "<blue>hello-world<reset>"
     assert output.getvalue() == expected

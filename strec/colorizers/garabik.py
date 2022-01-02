@@ -6,7 +6,7 @@ import re
 from array import array
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Iterable, List, Pattern, TextIO, Tuple
+from typing import IO, Any, Dict, Iterable, List, Pattern, Tuple
 
 from strec.colorizers.base import Colorizer
 from strec.themes import ColorMap
@@ -40,7 +40,7 @@ class Rule:
     """
 
     # TODO: Might make sense to use a compiled pattern
-    regex: Pattern
+    regex: Pattern[str]
     colors: List[str]
     count: Count = Count.MORE
     skip: bool = False
@@ -67,8 +67,8 @@ def convert(key: str, value: str) -> Tuple[str, Any]:
 
 
 def parse_config(config_content: str) -> list[Rule]:
-    rule_options = {}
-    output = []
+    rule_options: Dict[str, Any] = {}
+    output: List[Rule] = []
     for line in config_content.splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
@@ -99,7 +99,7 @@ def apply_replacements(text: str, replacements: List[Replacement]) -> str:
 
 
 def get_replacements(
-    match: re.Match, rule: Rule, colors: ColorMap
+    match: re.Match[str], rule: Rule, colors: ColorMap
 ) -> Iterable[Replacement]:
     for group_index in range(1, len(match.groups()) + 1):
         if match.group(group_index) is None:
@@ -119,7 +119,7 @@ class GarabikColorizer(Colorizer):
     """
 
     def __init__(
-        self, rules: List[Rule], output: TextIO, colors: ColorMap
+        self, rules: List[Rule], output: IO[str], colors: ColorMap
     ) -> None:
         self.rules = rules
         self.output = output
@@ -162,7 +162,7 @@ class GarabikColorizer(Colorizer):
         self.output.write(output)
 
     @staticmethod
-    def from_config_filename(filename: str, output: TextIO, colors: ColorMap):
+    def from_config_filename(filename: str, output: IO[str], colors: ColorMap):
         with open(filename) as fptr:
             rules = parse_config(fptr.read())
         return GarabikColorizer(rules, output, colors)

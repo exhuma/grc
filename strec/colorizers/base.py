@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from os import environ
 from os.path import basename, exists, join
 from posixpath import expanduser
-from typing import TextIO
+from typing import IO
 
 import pkg_resources
 
@@ -24,7 +24,7 @@ if "STREC_CONFIGS" in environ:
 CONF_LOCATIONS.append(pkg_resources.resource_filename("strec", "../configs"))
 
 
-def find_conf(file_or_app_name):
+def find_conf(file_or_app_name: str) -> str:
     """
     Searches for a config file name.
 
@@ -61,11 +61,13 @@ def find_conf(file_or_app_name):
 
 class Colorizer(metaclass=ABCMeta):
     @abstractmethod
-    def feed(self, line):  # pragma: no cover
+    def feed(self, line: str) -> None:  # pragma: no cover
         raise NotImplementedError("Not yet implemented")
 
     @staticmethod
-    def from_basename(cmd_basename: str, output: TextIO, colors: ColorMap):
+    def from_basename(
+        cmd_basename: str, output: IO[str], colors: ColorMap
+    ) -> "Colorizer":
         from .garabik import GarabikColorizer
         from .yaml import YamlColorizer
 
@@ -80,7 +82,9 @@ class Colorizer(metaclass=ABCMeta):
         raise StrecException(f"Unknown config-type in {filename!r}")
 
     @staticmethod
-    def from_config_filename(filename: str, output: TextIO, colors: ColorMap):
+    def from_config_filename(
+        filename: str, output: IO[str], colors: ColorMap
+    ) -> "Colorizer":
         from .garabik import GarabikColorizer
         from .yaml import YamlColorizer
 

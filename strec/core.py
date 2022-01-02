@@ -8,9 +8,12 @@ TODO
 
 import subprocess as sp
 import sys
+from typing import IO, List, Optional
+
+from strec.colorizers.base import Colorizer
 
 
-def process_lines(source, parser):
+def process_lines(source: IO[str], parser: Colorizer):
     """
     Read lines from *source* and process them until an empty-line is read.
     """
@@ -21,12 +24,12 @@ def process_lines(source, parser):
         parser.feed(line)
 
 
-def create_pty(args):
+def create_pty(args: List[str]) -> Optional[IO[str]]:
     proc = sp.Popen(args, stdout=sp.PIPE, text=True)
     return proc.stdout
 
 
-def create_stdin(config_name):
+def create_stdin(config_name: str) -> IO[str]:
     source = sys.stdin
     if not config_name:
         print(
