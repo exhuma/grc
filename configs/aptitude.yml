@@ -1,3 +1,4 @@
+---
 root:
     - match: '^(p)(.*)'
       replace: '{t.on_green}{t.black}\1{t.normal}\2'

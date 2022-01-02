@@ -1,3 +1,4 @@
+---
 root:
     - match: '(^[dprwx-]{10})'
       replace: '{blue}\1{reset}'

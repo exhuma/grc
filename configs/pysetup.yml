@@ -1,3 +1,4 @@
+---
 root:
     - match: '^(running)(.*)'
       replace: '*** {t.green}\1{t.normal}\2'
@@ -18,7 +19,7 @@ root:
 dependencies:
     - match: '^(Finished processing dependencies for)(.*)'
       replace: '{t.green}\1{t.normal}\2'
-      pop: yes
+      pop: true
 
     - match: '^(Searching for )(.*)$'
       replace: '\1{t.blue}\2{t.normal}'
@@ -27,7 +28,7 @@ dependencies:
 dependency:
     - match: '(.*)'
       replace: ' | \1'
-      continue: yes
+      continue: true
 
     - match: '^ \| (Installing.*)'
       replace: ' | >>> {t.green}\1{t.normal}'
@@ -43,4 +44,4 @@ dependency:
 
     - match: '^ \| Installed(.*)'
       replace: ' | Installed\1\n'
-      pop: yes
+      pop: true
