@@ -60,7 +60,7 @@ setup(
             "pytest-cov",
         ]
     },
-    entry_points={"console_scripts": ["strec=strec.core:main"]},
+    entry_points={"console_scripts": ["strec=strec.cli:main"]},
     data_files=[
         (
             CONF_TARGET,
