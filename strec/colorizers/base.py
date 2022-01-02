@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from os import environ
 from os.path import basename, exists, join
 from posixpath import expanduser
-from typing import IO
+from typing import IO, Optional
 
 import pkg_resources
 
@@ -67,12 +67,13 @@ class Colorizer(metaclass=ABCMeta):
     @staticmethod
     def from_basename(
         cmd_basename: str, output: IO[str], colors: ColorMap
-    ) -> "Colorizer":
+    ) -> Optional["Colorizer"]:
         from .garabik import GarabikColorizer
         from .yaml import YamlColorizer
 
-        # TODO inline "find_conf" into this method
         filename = find_conf(cmd_basename)
+        if not filename:
+            return None
         if filename.endswith(".yml") or filename.endswith(".yaml"):
             return YamlColorizer.from_config_filename(filename, output, colors)
         if basename(filename).startswith("conf."):

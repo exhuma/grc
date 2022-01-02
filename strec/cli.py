@@ -65,6 +65,9 @@ def run(stream: IO[str], args: Optional[List[str]]) -> None:
     if source is None:
         sys.stderr.write("Unexpected error when opening the text input")
         return
+    if parser is None:
+        sys.stderr.write("Unable to construct a parser!")
+        return
     process_lines(source, parser)
 
 
