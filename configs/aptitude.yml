@@ -1,9 +1,0 @@
-root:
-    - match: '^(p)(.*)'
-      replace: '{t.on_green}{t.black}\1{t.normal}\2'
-
-    - match: '^(i)(.*)'
-      replace: '{t.black_on_yellow}\1{t.normal}\2'
-
-    - match: '^(v)(.*)'
-      replace: '{t.black_on_magenta}\1{t.normal}\2'

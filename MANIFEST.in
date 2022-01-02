@@ -1,2 +1,0 @@
-recursive-include configs *.yml
-recursive-include docs *.rst *.png *.py
