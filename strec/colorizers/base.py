@@ -1,5 +1,6 @@
 import sys
 from abc import ABCMeta, abstractmethod
+from os import environ
 from os.path import basename, exists, join
 from posixpath import expanduser
 from typing import TextIO
@@ -14,6 +15,10 @@ CONF_LOCATIONS = [
     join("/etc", "strec", "conf.d"),
     join("/usr", "share", "strec", "conf.d"),
 ]
+
+# Prepend config-folder specified as environment variable
+if "STREC_CONFIGS" in environ:
+    CONF_LOCATIONS.insert(0, environ["STREC_CONFIGS"])
 
 # Add the installation folder to the config search path
 CONF_LOCATIONS.append(pkg_resources.resource_filename("strec", "../configs"))
