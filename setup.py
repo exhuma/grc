@@ -52,6 +52,7 @@ setup(
         "blessings",
         "blessings",
         "pyyaml",
+        "typing_extensions",
     ],
     extras_require={
         "test": [
