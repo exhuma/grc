@@ -1,5 +1,6 @@
 import sys
-from strec.garabik import parse_config, ANSI, Parser
+
+from strec.garabik import ANSI, Parser, parse_config
 
 with open(sys.argv[1]) as fptr:
     config = fptr.read()
