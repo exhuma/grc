@@ -319,7 +319,7 @@ def test_parse_config_single():
     We want to be able to convert a config file into a list of rules.
     """
     config_content = dedent(
-        """# Regular Up
+        r"""# Regular Up
         regexp=\sup(?: (\d+) days?,)? +(\d+ min|\d+:\d+)(?=,)
         colours=green,bold green, bold green
         """
