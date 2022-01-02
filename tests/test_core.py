@@ -6,20 +6,6 @@ import pytest
 import strec.core as core
 
 
-@pytest.mark.parametrize(
-    "args, config_name, cmd",
-    [
-        (["-c", "foo", "cmd"], "foo", ["cmd"]),
-        (["--config", "foo", "cmd"], "foo", ["cmd"]),
-        (["cmd", "foo", "bar"], None, ["cmd", "foo", "bar"]),
-    ],
-)
-def test_parse_args(args, config_name, cmd):
-    result = core.parse_args(args)
-    assert result.config_name == config_name
-    assert result.cmd == cmd
-
-
 def test_process_lines():
     source = StringIO("hello-world")
     colorizer = Mock()
