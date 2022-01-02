@@ -55,10 +55,14 @@ setup(
         "typing_extensions",
     ],
     extras_require={
+        "doc": [
+            "furo",
+            "sphinx",
+        ],
         "test": [
             "pytest",
             "pytest-cov",
-        ]
+        ],
     },
     entry_points={"console_scripts": ["strec=strec.cli:main"]},
     data_files=[

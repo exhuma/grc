@@ -1,26 +1,10 @@
-Generic Colorizer
-=================
-
-.. note:: Inspired by http://kassiopeia.juls.savba.sk/~garabik/software/grc.html
-
-``strec`` allows you to colorize (even transform) shell output.
-
-WARNING - Pending Project Rename
-================================
-
-In order to make roon on pypi for the original ``grc`` project, this project
-will be renamed to ``strec`` soon. The new name was chosen to be very different
-from ``grc`` to show that it's a different project. While both *do* the same,
-they do it in a very different manner, and more importantly, the config format
-is different.
-
 Alternatives
 ============
 
 The original ``grc``
 --------------------
 
-Available at http://kassiopeia.juls.savba.sk/~garabik/software/grc.html
+Available at https://github.com/garabik/grc
 
 While the original ``grc`` is a bit smarter with subprocesses, this rewrite
 focuses on ease of use (including Installation, `Configuration`_ and
@@ -43,66 +27,6 @@ See the installation document for more information.
 
 Usage
 =====
-
-Read lines from ``stdin`` and emit modified/colorized lines on ``stdout``
--------------------------------------------------------------------------
-
-.. note:: This is the best supported mode of operation.
-
-Synopsis
-~~~~~~~~
-
-::
-
-    <some_process> | strec -c <config>
-
-Example
-~~~~~~~
-
-::
-
-    tail -f /var/log/apache2/access.log | strec -c apache_access
-
-**Advantages**
-    * Only the stream you are sending to ``strec`` is affected.
-    * No known side-effects
-
-**Disadvantages**
-    * As ``strec`` only sees a stream, it cannot determine what application is
-      emitting the stream. You have to specify the config manually.
-
-Spawn a subprocess, capture it's output
----------------------------------------
-
-.. note:: Use this if you don't care about the downsides, and are lazy to
-          type.
-
-Synopsis
-~~~~~~~~
-
-::
-
-    strec <some_procss>
-
-Example
-~~~~~~~
-
-::
-
-    strec aptitude search python
-
-**Advantages**
-    * Much less to type
-    * Can auto-detect the config by using the sub-process application name.
-
-**Disadvantages**
-    * Spawning a subprocess and interacting with it's IO is non-trivial on a
-      TTY/PTY. To simplify the code, ``strec`` uses ``pexpect`` to do the IO
-      magic.
-    * ``stdout`` and ``stderr`` of the subprocess are combined into one
-      stream, which is then emitten on strec's ``stdout``. [1]_
-    * The output may not use all of the available terminal width. [1]_
-
 
 Configuration
 =============
@@ -279,46 +203,9 @@ Rules
 
     .. note:: This may change in a future release to give you yet more control
 
-Screenshots
-===========
-
-================ ================
-A python setup session
----------------------------------
-Before           After
-================ ================
-|pysetup-shot-b| |pysetup-shot-a|
-================ ================
-
-================= =================
-Simple aptitude search
------------------------------------
-Before            After
-================= =================
-|aptitude-shot-b| |aptitude-shot-a|
-================= =================
-
-====================== ======================
-Apache access_log
----------------------------------------------
-Before                 After
-====================== ======================
-|apache_access-shot-b| |apache_access-shot-a|
-====================== ======================
-
 Footnotes
 =========
 
-.. [1] ``strec`` uses ``pyexpect`` to deal with TTY pecularities. This will
-       however have two side-effects. First, ``stdout`` will be combined with
-       ``stderr``. And second, terminal width may not be well respected.
-
-.. |pysetup-shot-b| image:: /screenshots/pysetup_before.png
-.. |pysetup-shot-a| image:: /screenshots/pysetup_after.png
-.. |aptitude-shot-b| image:: /screenshots/aptitude_before.png
-.. |aptitude-shot-a| image:: /screenshots/aptitude_after.png
-.. |apache_access-shot-b| image:: /screenshots/apache_access_before.png
-.. |apache_access-shot-a| image:: /screenshots/apache_access_after.png
 
 .. _Linux FHS: http://www.pathname.com/fhs/
 .. _source-code access: https://github.com/exhuma/grc
